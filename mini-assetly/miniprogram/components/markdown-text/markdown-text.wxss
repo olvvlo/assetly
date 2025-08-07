@@ -1,0 +1,160 @@
+/* Markdown 容器 */
+.markdown-container {
+  padding: 20rpx;
+  line-height: 1.6;
+}
+
+/* 标题样式 */
+.markdown-h1 {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin: 20rpx 0 15rpx 0;
+  border-bottom: 2rpx solid #eee;
+  padding-bottom: 10rpx;
+}
+
+.markdown-h2 {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin: 18rpx 0 12rpx 0;
+}
+
+.markdown-h3 {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin: 16rpx 0 10rpx 0;
+}
+
+.markdown-h4 {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #333;
+  margin: 14rpx 0 8rpx 0;
+}
+
+/* 段落样式 */
+.markdown-p {
+  font-size: 28rpx;
+  color: #666;
+  margin: 10rpx 0;
+  line-height: 1.8;
+}
+
+/* 粗体样式 */
+.markdown-bold {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin: 10rpx 0;
+  line-height: 1.8;
+}
+
+/* 列表样式 */
+.markdown-li {
+  display: flex;
+  align-items: flex-start;
+  margin: 8rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+}
+
+.markdown-bullet {
+  color: #007AFF;
+  margin-right: 10rpx;
+  font-weight: bold;
+  margin-top: 2rpx;
+}
+
+.markdown-ol {
+  display: flex;
+  align-items: flex-start;
+  margin: 8rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+}
+
+.markdown-number {
+  color: #007AFF;
+  margin-right: 10rpx;
+  font-weight: bold;
+  margin-top: 2rpx;
+}
+
+/* 表格样式 */
+.markdown-table {
+  margin: 20rpx 0;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.table-header {
+  display: flex;
+  background-color: #f5f5f5;
+  border-bottom: 2rpx solid #e0e0e0;
+}
+
+.table-row {
+  display: flex;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-cell {
+  flex: 1;
+  padding: 16rpx 12rpx;
+  font-size: 26rpx;
+  color: #666;
+  border-right: 1rpx solid #f0f0f0;
+  word-wrap: break-word;
+  line-height: 1.6;
+}
+
+.table-cell:last-child {
+  border-right: none;
+}
+
+.table-header-cell {
+  font-weight: bold;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+/* 空行样式 */
+.markdown-break {
+  height: 20rpx;
+}
+
+/* Rich-text 内联样式 */
+.markdown-container rich-text {
+  line-height: inherit;
+}
+
+/* 内联元素样式 */
+.markdown-container strong {
+  font-weight: bold;
+  color: #333;
+}
+
+.markdown-container em {
+  font-style: italic;
+  color: #666;
+}
+
+.markdown-container code {
+  background-color: #f5f5f5;
+  padding: 4rpx 8rpx;
+  border-radius: 4rpx;
+  font-family: 'Courier New', monospace;
+  font-size: 24rpx;
+  color: #d63384;
+}

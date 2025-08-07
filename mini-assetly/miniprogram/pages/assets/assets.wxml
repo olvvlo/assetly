@@ -1,0 +1,100 @@
+<!--pages/assets/assets.wxml-->
+<view class="container">
+  <!-- 分享按钮 -->
+  <view class="share-header">
+    <button class="share-btn" bindtap="shareImage">
+      <text class="share-icon">📤</text>
+      <text>生成分享图片</text>
+    </button>
+  </view>
+
+  <!-- 资产报告预览 -->
+  <view class="share-preview">
+    <!-- 标题 -->
+    <view class="preview-header">
+      <text class="preview-title">我的资产报告</text>
+      <text class="preview-date">{{currentDate}}</text>
+    </view>
+
+    <!-- 总资产 -->
+    <view class="total-asset">
+      <text class="total-label">总资产</text>
+      <text class="total-amount">{{formattedTotalAmount}}</text>
+      <text class="total-count">共 {{assets.length}} 项资产</text>
+    </view>
+
+    <!-- 资产分布 -->
+    <view class="asset-distribution" wx:if="{{categoryData.length > 0}}">
+      <text class="section-title">资产分布</text>
+      <view class="category-list">
+        <view class="category-item" wx:for="{{categoryData}}" wx:key="category">
+          <view class="category-info">
+            <view class="category-dot" style="background-color: {{item.color}}"></view>
+            <text class="category-name">{{item.icon}} {{item.category}}</text>
+            <text class="category-percentage">{{item.percentage}}%</text>
+          </view>
+          <text class="category-amount">{{item.formattedAmount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 资产列表 -->
+    <view class="asset-list" wx:if="{{allAssets.length > 0}}">
+      <text class="section-title">资产列表</text>
+      <view class="asset-items">
+        <view class="asset-item" wx:for="{{allAssets}}" wx:key="id" wx:for-index="index">
+          <view class="asset-main">
+            <view class="asset-header">
+              <text class="asset-icon">{{item.categoryIcon}}</text>
+              <text class="asset-name">{{item.name}}</text>
+            </view>
+            <view class="asset-meta">
+              <text class="asset-category">{{item.category}}</text>
+              <text class="asset-date">{{item.formattedCreatedAt}}</text>
+            </view>
+            <text class="asset-remark" wx:if="{{item.remark}}">{{item.remark}}</text>
+          </view>
+          <view class="asset-value">
+            <text class="current-value">{{item.formattedDisplayValue}}</text>
+            <text class="original-value" wx:if="{{item.currentValue !== undefined && item.currentValue !== item.amount}}">
+              原价: {{item.formattedAmount}}
+            </text>
+            <text class="purchase-date">{{item.formattedPurchaseDate}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{assets.length === 0}}">
+      <text class="empty-icon">📊</text>
+      <text class="empty-text">暂无资产记录</text>
+      <text class="empty-hint">添加资产后可生成分享报告</text>
+    </view>
+
+    <!-- 页脚 -->
+    <view class="preview-footer">
+      <text class="footer-text">由 简资 Assetly 生成</text>
+    </view>
+  </view>
+
+  <!-- 隐藏的画布用于生成图片 -->
+  <canvas type="2d" id="shareCanvas" class="share-canvas"></canvas>
+
+  <!-- 分享预览弹框 -->
+  <view class="share-modal" wx:if="{{showShareModal}}" bindtap="closeShareModal">
+    <view class="modal-content" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">分享预览</text>
+        <text class="modal-close" bindtap="closeShareModal">×</text>
+      </view>
+      <scroll-view class="modal-body" scroll-y="true">
+        <image class="preview-image" src="{{shareImagePath}}" mode="widthFix"></image>
+      </scroll-view>
+      <view class="modal-footer">
+        <button class="modal-btn primary" bindtap="downloadImage">保存到相册</button>
+        <button class="modal-btn primary" bindtap="shareImage">直接分享</button>
+      </view>
+    </view>
+  </view>
+</view>

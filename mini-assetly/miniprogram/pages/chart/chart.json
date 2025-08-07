@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "资产分析",
+  "navigationBarBackgroundColor": "#007aff",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f8f9fa",
+  "usingComponents": {
+    "ec-canvas": "../../components/ec-canvas/ec-canvas",
+    "markdown-renderer": "../../components/markdown-renderer/markdown-renderer"
+  }
+}

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Element Selector - 基础使用示例</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+        
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            background-color: #f9fafb;
+        }
+        
+        .element-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .info-item {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #6b7280;
+            word-break: break-all;
+        }
+        
+        .screenshot {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+        }
+        
+        .demo-content {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+        }
+        
+        .demo-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 6px;
+        }
+        
+        .demo-section h3 {
+            margin-top: 0;
+            color: #1f2937;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .demo-card {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+        }
+        
+        .demo-card img {
+            width: 50px;
+            height: 50px;
+            background: #3b82f6;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Smart Element Selector 示例</h1>
+            <p>点击"开始选择"按钮，然后将鼠标悬停在页面元素上进行选择</p>
+        </div>
+        
+        <div class="controls">
+            <button id="startBtn" class="btn-primary">开始选择</button>
+            <button id="stopBtn" class="btn-secondary" disabled>停止选择</button>
+            <button id="clearBtn" class="btn-danger">清除结果</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;">
+            <h3>选择结果</h3>
+            <div id="elementInfo" class="element-info"></div>
+            <div id="screenshot" class="screenshot"></div>
+        </div>
+        
+        <div class="demo-content">
+            <h2>演示内容区域</h2>
+            <p>这里是一些演示内容，你可以尝试选择下面的各种元素：</p>
+            
+            <div class="demo-section">
+                <h3>文本内容</h3>
+                <p>这是一个段落文本，包含了一些<strong>加粗文字</strong>和<em>斜体文字</em>。</p>
+                <blockquote>这是一个引用块，通常用来引用其他人的话。</blockquote>
+            </div>
+            
+            <div class="demo-section">
+                <h3>按钮和表单</h3>
+                <button class="btn-primary">主要按钮</button>
+                <button class="btn-secondary">次要按钮</button>
+                <input type="text" placeholder="输入框" style="margin-left: 10px; padding: 8px;">
+            </div>
+            
+            <div class="demo-section">
+                <h3>卡片网格</h3>
+                <div class="demo-grid">
+                    <div class="demo-card">
+                        <div class="demo-card img"></div>
+                        <h4>卡片标题 1</h4>
+                        <p>这是卡片的描述内容</p>
+                    </div>
+                    <div class="demo-card">
+                        <div class="demo-card img"></div>
+                        <h4>卡片标题 2</h4>
+                        <p>这是另一个卡片的描述</p>
+                    </div>
+                    <div class="demo-card">
+                        <div class="demo-card img"></div>
+                        <h4>卡片标题 3</h4>
+                        <p>第三个卡片的内容</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="demo-section">
+                <h3>列表内容</h3>
+                <ul>
+                    <li>列表项目 1</li>
+                    <li>列表项目 2</li>
+                    <li>列表项目 3</li>
+                </ul>
+                <ol>
+                    <li>有序列表项 1</li>
+                    <li>有序列表项 2</li>
+                    <li>有序列表项 3</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script>
+        // 模拟 SmartElementSelector 类（实际使用时应该从 npm 包导入）
+        class SmartElementSelector {
+            constructor(options = {}, callbacks = {}) {
+                this.options = {
+                    overlayColor: '#3b82f6',
+                    overlayOpacity: 0.3,
+                    borderColor: '#2563eb',
+                    borderWidth: 2,
+                    showTooltip: true,
+                    tooltipContent: (element) => `${element.tagName.toLowerCase()}${element.id ? '#' + element.id : ''}${element.className ? '.' + element.className.split(' ').join('.') : ''}`,
+                    excludeSelectors: ['script', 'style', 'meta', 'link', 'title'],
+                    captureDelay: 100,
+                    enableKeyboardShortcuts: true,
+                    ...options
+                };
+                
+                this.callbacks = callbacks;
+                this.overlay = null;
+                this.tooltip = null;
+                this.isSelecting = false;
+                this.currentElement = null;
+                
+                this.handleMouseMove = this.handleMouseMove.bind(this);
+                this.handleMouseClick = this.handleMouseClick.bind(this);
+                this.handleKeyDown = this.handleKeyDown.bind(this);
+            }
+            
+            start() {
+                if (this.isSelecting) return;
+                
+                this.isSelecting = true;
+                this.callbacks.onSelectionStart?.();
+                
+                this.createOverlay();
+                this.addEventListeners();
+            }
+            
+            stop() {
+                if (!this.isSelecting) return;
+                
+                this.isSelecting = false;
+                this.removeEventListeners();
+                this.removeOverlay();
+                this.removeTooltip();
+                
+                this.callbacks.onSelectionEnd?.();
+            }
+            
+            createOverlay() {
+                this.overlay = document.createElement('div');
+                this.overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 0;
+                    height: 0;
+                    background-color: ${this.options.overlayColor};
+                    opacity: ${this.options.overlayOpacity};
+                    border: ${this.options.borderWidth}px solid ${this.options.borderColor};
+                    pointer-events: none;
+                    z-index: 999999;
+                    transition: all 0.1s ease;
+                    box-sizing: border-box;
+                `;
+                
+                document.body.appendChild(this.overlay);
+            }
+            
+            createTooltip() {
+                if (!this.options.showTooltip) return;
+                
+                this.tooltip = document.createElement('div');
+                this.tooltip.style.cssText = `
+                    position: fixed;
+                    background: rgba(0, 0, 0, 0.8);
+                    color: white;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    font-family: monospace;
+                    pointer-events: none;
+                    z-index: 1000000;
+                    white-space: nowrap;
+                    max-width: 300px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                `;
+                
+                document.body.appendChild(this.tooltip);
+            }
+            
+            removeOverlay() {
+                if (this.overlay) {
+                    this.overlay.remove();
+                    this.overlay = null;
+                }
+            }
+            
+            removeTooltip() {
+                if (this.tooltip) {
+                    this.tooltip.remove();
+                    this.tooltip = null;
+                }
+            }
+            
+            addEventListeners() {
+                document.addEventListener('mousemove', this.handleMouseMove, true);
+                document.addEventListener('click', this.handleMouseClick, true);
+                
+                if (this.options.enableKeyboardShortcuts) {
+                    document.addEventListener('keydown', this.handleKeyDown, true);
+                }
+            }
+            
+            removeEventListeners() {
+                document.removeEventListener('mousemove', this.handleMouseMove, true);
+                document.removeEventListener('click', this.handleMouseClick, true);
+                document.removeEventListener('keydown', this.handleKeyDown, true);
+            }
+            
+            handleMouseMove(event) {
+                if (!this.isSelecting) return;
+                
+                const element = document.elementFromPoint(event.clientX, event.clientY);
+                if (!element || element === this.currentElement) return;
+                
+                if (this.shouldExcludeElement(element)) return;
+                
+                this.currentElement = element;
+                this.updateOverlay(element);
+                this.updateTooltip(element, event.clientX, event.clientY);
+            }
+            
+            handleMouseClick(event) {
+                if (!this.isSelecting || !this.currentElement) return;
+                
+                event.preventDefault();
+                event.stopPropagation();
+                
+                this.captureElement(this.currentElement);
+            }
+            
+            handleKeyDown(event) {
+                if (!this.isSelecting) return;
+                
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.stop();
+                    this.callbacks.onSelectionCancelled?.();
+                }
+            }
+            
+            shouldExcludeElement(element) {
+                const tagName = element.tagName.toLowerCase();
+                return this.options.excludeSelectors.includes(tagName) || 
+                       element === this.overlay || 
+                       element === this.tooltip;
+            }
+            
+            updateOverlay(element) {
+                if (!this.overlay) return;
+                
+                const rect = element.getBoundingClientRect();
+                
+                this.overlay.style.left = `${rect.left}px`;
+                this.overlay.style.top = `${rect.top}px`;
+                this.overlay.style.width = `${rect.width}px`;
+                this.overlay.style.height = `${rect.height}px`;
+            }
+            
+            updateTooltip(element, mouseX, mouseY) {
+                if (!this.options.showTooltip) return;
+                
+                if (!this.tooltip) {
+                    this.createTooltip();
+                }
+                
+                const content = this.options.tooltipContent(element);
+                this.tooltip.textContent = content;
+                
+                let left = mouseX + 10;
+                let top = mouseY - 30;
+                
+                const tooltipRect = this.tooltip.getBoundingClientRect();
+                if (left + tooltipRect.width > window.innerWidth) {
+                    left = mouseX - tooltipRect.width - 10;
+                }
+                
+                if (top < 0) {
+                    top = mouseY + 20;
+                }
+                
+                this.tooltip.style.left = `${left}px`;
+                this.tooltip.style.top = `${top}px`;
+            }
+            
+            async captureElement(element) {
+                try {
+                    const overlayDisplay = this.overlay?.style.display;
+                    const tooltipDisplay = this.tooltip?.style.display;
+                    
+                    if (this.overlay) this.overlay.style.display = 'none';
+                    if (this.tooltip) this.tooltip.style.display = 'none';
+                    
+                    await new Promise(resolve => setTimeout(resolve, this.options.captureDelay));
+                    
+                    const elementInfo = this.getElementInfo(element);
+                    
+                    const canvas = await html2canvas(element, {
+                        useCORS: true,
+                        allowTaint: true,
+                        scale: 1,
+                        logging: false,
+                        width: elementInfo.rect.width,
+                        height: elementInfo.rect.height
+                    });
+                    
+                    const imageData = canvas.toDataURL('image/png');
+                    
+                    if (this.overlay && overlayDisplay) this.overlay.style.display = overlayDisplay;
+                    if (this.tooltip && tooltipDisplay) this.tooltip.style.display = tooltipDisplay;
+                    
+                    const result = {
+                        image: imageData,
+                        elementInfo
+                    };
+                    
+                    this.stop();
+                    this.callbacks.onElementSelected?.(result);
+                    
+                } catch (error) {
+                    this.callbacks.onError?.(error);
+                }
+            }
+            
+            getElementInfo(element) {
+                const rect = element.getBoundingClientRect();
+                
+                return {
+                    tagName: element.tagName,
+                    className: element.className,
+                    id: element.id,
+                    textContent: element.textContent?.trim() || '',
+                    rect: {
+                        x: rect.left,
+                        y: rect.top,
+                        width: rect.width,
+                        height: rect.height
+                    },
+                    xpath: this.getXPath(element),
+                    selector: this.getSelector(element)
+                };
+            }
+            
+            getXPath(element) {
+                if (element.id) {
+                    return `//*[@id="${element.id}"]`;
+                }
+                
+                if (element === document.body) {
+                    return '/html/body';
+                }
+                
+                let ix = 0;
+                const siblings = element.parentNode?.childNodes || [];
+                
+                for (let i = 0; i < siblings.length; i++) {
+                    const sibling = siblings[i];
+                    if (sibling === element) {
+                        return this.getXPath(element.parentElement) + '/' + element.tagName.toLowerCase() + '[' + (ix + 1) + ']';
+                    }
+                    if (sibling.nodeType === 1 && sibling.tagName === element.tagName) {
+                        ix++;
+                    }
+                }
+                
+                return '';
+            }
+            
+            getSelector(element) {
+                if (element.id) {
+                    return `#${element.id}`;
+                }
+                
+                if (element.className) {
+                    const classes = element.className.split(' ').filter(c => c.trim());
+                    if (classes.length > 0) {
+                        return `${element.tagName.toLowerCase()}.${classes.join('.')}`;
+                    }
+                }
+                
+                return element.tagName.toLowerCase();
+            }
+        }
+
+        // 页面逻辑
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const resultDiv = document.getElementById('result');
+        const elementInfoDiv = document.getElementById('elementInfo');
+        const screenshotDiv = document.getElementById('screenshot');
+
+        let selector = null;
+
+        startBtn.addEventListener('click', () => {
+            selector = new SmartElementSelector(
+                {
+                    overlayColor: '#3b82f6',
+                    overlayOpacity: 0.3,
+                    showTooltip: true
+                },
+                {
+                    onSelectionStart: () => {
+                        startBtn.disabled = true;
+                        stopBtn.disabled = false;
+                        startBtn.textContent = '选择中...';
+                    },
+                    onSelectionEnd: () => {
+                        startBtn.disabled = false;
+                        stopBtn.disabled = true;
+                        startBtn.textContent = '开始选择';
+                    },
+                    onSelectionCancelled: () => {
+                        console.log('选择已取消');
+                    },
+                    onElementSelected: (result) => {
+                        displayResult(result);
+                    },
+                    onError: (error) => {
+                        console.error('选择出错:', error);
+                        alert('选择出错: ' + error.message);
+                    }
+                }
+            );
+            
+            selector.start();
+        });
+
+        stopBtn.addEventListener('click', () => {
+            if (selector) {
+                selector.stop();
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            resultDiv.style.display = 'none';
+            elementInfoDiv.innerHTML = '';
+            screenshotDiv.innerHTML = '';
+        });
+
+        function displayResult(result) {
+            const { elementInfo, image } = result;
+            
+            elementInfoDiv.innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">标签名</div>
+                    <div class="info-value">${elementInfo.tagName}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">ID</div>
+                    <div class="info-value">${elementInfo.id || '无'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">类名</div>
+                    <div class="info-value">${elementInfo.className || '无'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">文本内容</div>
+                    <div class="info-value">${elementInfo.textContent.slice(0, 100)}${elementInfo.textContent.length > 100 ? '...' : ''}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">尺寸</div>
+                    <div class="info-value">${Math.round(elementInfo.rect.width)} × ${Math.round(elementInfo.rect.height)}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">CSS 选择器</div>
+                    <div class="info-value">${elementInfo.selector}</div>
+                </div>
+            `;
+            
+            screenshotDiv.innerHTML = `
+                <h4>元素截图</h4>
+                <img src="${image}" alt="选中元素的截图" />
+            `;
+            
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

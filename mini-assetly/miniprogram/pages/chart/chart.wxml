@@ -1,0 +1,250 @@
+<!--pages/chart/chart.wxml-->
+<view class="container">
+  <!-- 标签页切换 -->
+  <view class="chart-tabs">
+    <view class="tab-item {{tabType === 'distribution' ? 'active' : ''}}" 
+          data-type="distribution" bindtap="switchTab">
+      <text class="tab-text">资产分布</text>
+    </view>
+    <view class="tab-item {{tabType === 'analysis' ? 'active' : ''}}" 
+          data-type="analysis" bindtap="switchTab">
+      <text class="tab-text">个人总结</text>
+    </view>
+  </view>
+
+  <!-- 资产分布页面 -->
+  <view class="distribution-container" wx:if="{{tabType === 'distribution'}}">
+    
+    <!-- 矩形树图分析 -->
+    <view class="module-card">
+      <view class="module-header">
+        <text class="module-title">📊 矩形树图分析</text>
+        <text class="total-amount">总计：{{formattedTotalAmount}}</text>
+      </view>
+      
+      <view class="pie-section" wx:if="{{categoryData.length > 0}}">
+        <!-- 矩形树图显示 -->
+        <view class="pie-chart">
+          <!-- ECharts矩形树图 -->
+          <ec-canvas id="mychart-dom-pie" canvas-id="mychart-pie" ec="{{ pieEc }}"></ec-canvas>
+        </view>
+
+        <!-- 分类列表 -->
+        <view class="category-list">
+          <view class="category-item" wx:for="{{categoryData}}" wx:key="key">
+            <view class="category-info">
+              <view class="category-dot" style="background-color: {{item.color}}"></view>
+              <text class="category-icon">{{item.icon}}</text>
+              <text class="category-name">{{item.name}}</text>
+            </view>
+            <view class="category-stats">
+              <text class="category-amount">{{item.formattedValue}}</text>
+              <text class="category-percentage">{{item.percentage}}%</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="empty-state" wx:if="{{categoryData.length === 0}}">
+        <text class="empty-icon">📊</text>
+        <text class="empty-text">暂无数据</text>
+      </view>
+    </view>
+
+    <!-- 类别对比 -->
+    <view class="module-card">
+      <view class="module-header">
+        <text class="module-title">📈 类别对比</text>
+      </view>
+      
+      <view class="comparison-section" wx:if="{{categoryComparison.length > 0}}">
+        <view class="comparison-item" wx:for="{{categoryComparison}}" wx:key="key">
+          <view class="comparison-info">
+            <text class="comparison-icon">{{item.icon}}</text>
+            <text class="comparison-name">{{item.name}}</text>
+          </view>
+          <view class="comparison-bar">
+            <view class="bar-fill" 
+                  style="width: {{item.barWidth}}%; background-color: {{item.color}};">
+            </view>
+          </view>
+          <text class="comparison-value">{{item.formattedValue}}</text>
+        </view>
+      </view>
+
+      <view class="empty-state" wx:if="{{categoryComparison.length === 0}}">
+        <text class="empty-icon">📈</text>
+        <text class="empty-text">暂无数据</text>
+      </view>
+    </view>
+
+    <!-- 趋势分析 -->
+    <view class="module-card">
+      <view class="module-header">
+        <text class="module-title">📊 趋势分析</text>
+      </view>
+      
+      <view class="trend-section" wx:if="{{trendData.length > 0}}">
+        <!-- 趋势图 -->
+        <view class="trend-graph">
+          <!-- ECharts折线图 -->
+          <ec-canvas id="mychart-dom-trend" canvas-id="mychart-trend" ec="{{ trendEc }}"></ec-canvas>
+        </view>
+      </view>
+
+      <view class="empty-state" wx:if="{{trendData.length === 0}}">
+        <text class="empty-icon">📊</text>
+        <text class="empty-text">暂无数据</text>
+      </view>
+    </view>
+
+    <!-- 分类汇总 -->
+    <view class="module-card">
+      <view class="module-header">
+        <text class="module-title">📋 分类汇总</text>
+      </view>
+      
+      <view class="summary-section">
+        <view class="summary-grid">
+          <view class="summary-item">
+            <text class="summary-label">资产总数</text>
+            <text class="summary-value">{{categorySummary.totalAssets}}</text>
+          </view>
+          <view class="summary-item">
+            <text class="summary-label">资产总值</text>
+            <text class="summary-value">{{categorySummary.formattedTotalValue}}</text>
+          </view>
+          <view class="summary-item">
+            <text class="summary-label">分类数量</text>
+            <text class="summary-value">{{categorySummary.categoryCount}}</text>
+          </view>
+          <view class="summary-item">
+            <text class="summary-label">平均价值</text>
+            <text class="summary-value">{{categorySummary.formattedAverageValue}}</text>
+          </view>
+        </view>
+
+        <view class="top-category" wx:if="{{categorySummary.topCategory}}">
+          <text class="top-label">最大资产类别</text>
+          <view class="top-info">
+            <text class="top-icon">{{categorySummary.topCategory.icon}}</text>
+            <text class="top-name">{{categorySummary.topCategory.name}}</text>
+            <text class="top-value">{{categorySummary.topCategory.formattedValue}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 个人总结页面 -->
+  <view class="analysis-container" wx:if="{{tabType === 'analysis'}}">
+    
+    <!-- 个人财务实力分析 -->
+    <view class="module-card">
+      <view class="module-header">
+        <text class="module-title">🎯 个人资产分析</text>
+        <view class="analysis-actions" wx:if="{{!isAnalyzing}}">
+          <button class="refresh-btn" bindtap="generateAIAnalysis" size="mini">
+            <text class="refresh-icon">↻</text>
+            <text>重新分析</text>
+          </button>
+        </view>
+      </view>
+      
+      <!-- 加载状态 -->
+      <view class="loading-state" wx:if="{{isAnalyzing}}">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">AI正在分析您的财务状况...</text>
+      </view>
+      
+      <!-- 总体分析卡片 -->
+      <view class="overall-analysis-card" wx:else>
+        <view class="rank-display">
+          <view class="rank-info">
+            <text class="rank-label">财务实力段位</text>
+            <text class="rank-badge {{rankingClass}}">{{rankingLevel}}</text>
+          </view>
+          
+          <view class="score-stats">
+            <view class="score-item">
+              <text class="score-label">综合评分</text>
+              <text class="score-value">{{rankingScore}}</text>
+              <text class="score-total">总分 {{totalScore}}/600</text>
+            </view>
+            
+            <view class="ranking-info">
+              <text class="ranking-label">排名情况</text>
+              <view class="ranking-stats">
+                <view class="ranking-item">
+                  <text class="ranking-desc">地区排名:</text>
+                  <text class="ranking-percent regional">前{{regionalRanking}}%</text>
+                </view>
+                <view class="ranking-item">
+                  <text class="ranking-desc">全国排名:</text>
+                  <text class="ranking-percent national">前{{nationalRanking}}%</text>
+                </view>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 分析摘要 -->
+          <view class="analysis-summary">
+            <text class="summary-text">{{rankingAnalysisSummary}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 雷达图 -->
+    <view class="module-card" wx:if="{{!isAnalyzing && radarData.length > 0}}">
+      <view class="module-header">
+        <text class="module-title">📊 能力雷达图</text>
+      </view>
+      
+      <view class="radar-section">
+        <!-- ECharts雷达图 -->
+        <view class="radar-chart">
+          <ec-canvas id="mychart-dom-radar" canvas-id="mychart-radar" ec="{{ radarEc }}"></ec-canvas>
+        </view>
+        
+        <!-- 雷达数据列表 -->
+        <view class="radar-list">
+          <view class="radar-item" wx:for="{{radarData}}" wx:key="dimension">
+            <view class="radar-info">
+              <text class="radar-dimension">{{item.dimension}}</text>
+              <text class="radar-score-text">{{item.score}}分</text>
+            </view>
+            <view class="radar-bar">
+              <view class="radar-fill" 
+                    style="width: {{item.score}}%; background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)">
+                <text class="radar-bar-score">{{item.score.toFixed(1)}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 详细分析说明 -->
+    <view class="module-card analysis-note" wx:if="{{!isAnalyzing && aiAnalysis}}">
+      <view class="module-header">
+        <text class="module-title">📝 详细分析报告</text>
+        <view class="analysis-type-badge">
+          <text class="type-text" wx:if="{{analysisType === 'ai'}}">🤖 AI分析</text>
+          <text class="type-text" wx:else>📊 本地分析</text>
+        </view>
+      </view>
+      
+      <view class="analysis-content">
+        <markdown-renderer content="{{aiAnalysis}}"></markdown-renderer>
+      </view>
+      
+      <view class="note-content">
+        <text class="note-item">* 评分基于您的个人信息、资产配置和同龄人群数据进行综合计算。</text>
+        <text class="note-item" wx:if="{{analysisType === 'ai'}}">* AI分析基于您的个人信息和资产状况，提供个性化的专业建议。</text>
+        <text class="note-item" wx:else>* 本地分析基于通用算法，如需更精准分析请在设置中配置AI密钥。</text>
+        <text class="note-item">* 排名数据基于国家统计局、央行等权威机构发布的家庭资产调研数据计算，具有较高参考价值。</text>
+      </view>
+    </view>
+  </view>
+</view>

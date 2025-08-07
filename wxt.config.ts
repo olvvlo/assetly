@@ -15,13 +15,10 @@ export default defineConfig({
     name: "简资 Assetly",
     description: "极简本地化的个人资产管理工具",
     permissions: [
-      "sidePanel",
-      "storage",
-      "activeTab",
-      "tabs",
-      "scripting",
-      "desktopCapture",
-    ],
+    "sidePanel",
+    "storage",
+    "activeTab",
+  ],
     side_panel: {
       default_path: "sidepanel.html",
     },

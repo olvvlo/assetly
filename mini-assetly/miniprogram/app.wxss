@@ -1,0 +1,44 @@
+/**app.wxss**/
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+button {
+  background: initial;
+}
+
+button:focus {
+  outline: 0;
+}
+
+button:after {
+  border: none;
+}
+
+page {
+  background: #f6f6f6;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* 全局数字字体设置 */
+.number,
+.amount,
+.currency,
+.price,
+.value,
+.category-total,
+.total-amount,
+.category-amount,
+.current-value,
+.original-value,
+.pie-total,
+.comparison-value,
+.summary-value,
+.top-value {
+  font-family: system-ui, "PingFang SC", STHeiti, sans-serif;
+}

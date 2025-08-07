@@ -1,0 +1,66 @@
+<!-- components/markdown-renderer/markdown-renderer.wxml -->
+<view class="markdown-container">
+  <block wx:for="{{parsedContent}}" wx:key="index">
+    <!-- 表格 -->
+    <view wx:if="{{item.type === 'table'}}" class="markdown-table">
+      <view wx:for="{{item.rows}}" wx:for-item="row" wx:for-index="rowIndex" wx:key="rowIndex" class="markdown-table-row {{rowIndex === 0 ? 'markdown-table-header' : ''}}">
+        <view wx:for="{{row}}" wx:for-item="cell" wx:for-index="cellIndex" wx:key="cellIndex" class="markdown-table-cell">{{cell}}</view>
+      </view>
+    </view>
+    
+    <!-- 标题 -->
+    <view wx:elif="{{item.type === 'h1'}}" class="markdown-h1">{{item.content}}</view>
+    <view wx:elif="{{item.type === 'h1-mixed'}}" class="markdown-h1">
+      <text wx:for="{{item.parts}}" wx:key="index" class="{{item.type === 'bold' ? 'markdown-bold' : ''}}">{{item.content}}</text>
+    </view>
+    <view wx:elif="{{item.type === 'h2'}}" class="markdown-h2">{{item.content}}</view>
+    <view wx:elif="{{item.type === 'h2-mixed'}}" class="markdown-h2">
+      <text wx:for="{{item.parts}}" wx:key="index" class="{{item.type === 'bold' ? 'markdown-bold' : ''}}">{{item.content}}</text>
+    </view>
+    <view wx:elif="{{item.type === 'h3'}}" class="markdown-h3">{{item.content}}</view>
+    <view wx:elif="{{item.type === 'h3-mixed'}}" class="markdown-h3">
+      <text wx:for="{{item.parts}}" wx:key="index" class="{{item.type === 'bold' ? 'markdown-bold' : ''}}">{{item.content}}</text>
+    </view>
+    <view wx:elif="{{item.type === 'h4'}}" class="markdown-h4">{{item.content}}</view>
+    <view wx:elif="{{item.type === 'h4-mixed'}}" class="markdown-h4">
+      <text wx:for="{{item.parts}}" wx:key="index" class="{{item.type === 'bold' ? 'markdown-bold' : ''}}">{{item.content}}</text>
+    </view>
+    <view wx:elif="{{item.type === 'h5'}}" class="markdown-h5">{{item.content}}</view>
+    <view wx:elif="{{item.type === 'h5-mixed'}}" class="markdown-h5">
+      <text wx:for="{{item.parts}}" wx:key="index" class="{{item.type === 'bold' ? 'markdown-bold' : ''}}">{{item.content}}</text>
+    </view>
+    
+    <!-- 分隔线 -->
+    <view wx:elif="{{item.type === 'hr'}}" class="markdown-hr"></view>
+    
+    <!-- 无序列表 -->
+    <view wx:elif="{{item.type === 'li'}}" class="markdown-li">
+      <text class="markdown-bullet">•</text>
+      <text class="markdown-li-content">{{item.content}}</text>
+    </view>
+    <view wx:elif="{{item.type === 'li-mixed'}}" class="markdown-li">
+      <text class="markdown-bullet">•</text>
+      <view class="markdown-li-content">
+        <text wx:for="{{item.parts}}" wx:key="index" class="{{item.type === 'bold' ? 'markdown-bold' : ''}}">{{item.content}}</text>
+      </view>
+    </view>
+    
+    <!-- 有序列表 -->
+    <view wx:elif="{{item.type === 'ol'}}" class="markdown-ol">
+      <text class="markdown-number">{{item.number}}.</text>
+      <text class="markdown-ol-content">{{item.content}}</text>
+    </view>
+    <view wx:elif="{{item.type === 'ol-mixed'}}" class="markdown-ol">
+      <text class="markdown-number">{{item.number}}.</text>
+      <view class="markdown-ol-content">
+        <text wx:for="{{item.parts}}" wx:key="index" class="{{item.type === 'bold' ? 'markdown-bold' : ''}}">{{item.content}}</text>
+      </view>
+    </view>
+    
+    <!-- 段落 -->
+    <view wx:elif="{{item.type === 'p'}}" class="markdown-p">{{item.content}}</view>
+    <view wx:elif="{{item.type === 'mixed'}}" class="markdown-p">
+      <text wx:for="{{item.parts}}" wx:key="index" class="{{item.type === 'bold' ? 'markdown-bold' : ''}}">{{item.content}}</text>
+    </view>
+  </block>
+</view>

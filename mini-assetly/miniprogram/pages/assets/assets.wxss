@@ -1,0 +1,409 @@
+/* pages/assets/assets.wxss */
+.container {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 16rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 分享按钮 */
+.share-header {
+  margin-bottom: 24rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.share-btn {
+  width: auto !important;
+  background: linear-gradient(135deg, #007aff, #5ac8fa);
+  color: #fff;
+  border: none;
+  border-radius: 48rpx;
+  padding: 24rpx 48rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  box-shadow: 0 8rpx 24rpx rgba(0, 122, 255, 0.3);
+}
+
+.share-btn:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.share-icon {
+  font-size: 36rpx;
+}
+
+/* 分享预览 */
+.share-preview {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-radius: 24rpx;
+  padding: 48rpx 40rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+  border: 1rpx solid #f0f0f0;
+}
+
+/* 预览标题 */
+.preview-header {
+  text-align: center;
+  padding-bottom: 40rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+  margin-bottom: 56rpx;
+}
+
+.preview-title {
+  display: block;
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 20rpx;
+}
+
+.preview-date {
+  font-size: 30rpx;
+  color: #666;
+}
+
+/* 总资产 */
+.total-asset {
+  background: linear-gradient(135deg, #dbeafe, #e0f2fe);
+  border-radius: 24rpx;
+  padding: 56rpx 48rpx;
+  text-align: center;
+  margin-bottom: 56rpx;
+  border: 1rpx solid rgba(37, 99, 235, 0.1);
+}
+
+.total-label {
+  display: block;
+  font-size: 30rpx;
+  color: #666;
+  margin-bottom: 20rpx;
+}
+
+.total-amount {
+  display: block;
+  font-size: 68rpx;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 20rpx;
+  letter-spacing: -1rpx;
+}
+
+.total-count {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 章节标题 */
+.section-title {
+  display: block;
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 36rpx;
+}
+
+/* 资产分布 */
+.asset-distribution {
+  margin-bottom: 56rpx;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.category-item:last-child {
+  border-bottom: none;
+}
+
+.category-info {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  flex: 1;
+}
+
+.category-dot {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.category-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #374151;
+  flex: 1;
+}
+
+.category-percentage {
+  font-size: 26rpx;
+  color: #666;
+  background-color: #f8f9fa;
+  padding: 10rpx 18rpx;
+  border-radius: 16rpx;
+  border: 1rpx solid #e9ecef;
+}
+
+.category-amount {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-left: 28rpx;
+}
+
+/* 资产列表 */
+.asset-list {
+  margin-bottom: 56rpx;
+}
+
+.asset-items {
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+}
+
+.asset-item {
+  background-color: #fff;
+  border-radius: 20rpx;
+  padding: 36rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  border: 1rpx solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.asset-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.asset-header {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.asset-icon {
+  font-size: 40rpx;
+}
+
+.asset-name {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asset-meta {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  margin-bottom: 16rpx;
+}
+
+.asset-category {
+  font-size: 26rpx;
+  color: #666;
+  background-color: #f8f9fa;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid #e9ecef;
+}
+
+.asset-date {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.asset-remark {
+  font-size: 26rpx;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 12rpx;
+}
+
+.asset-value {
+  text-align: right;
+  margin-left: 36rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+}
+
+.current-value {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.original-value {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.purchase-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 120rpx 48rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 32rpx;
+  display: block;
+}
+
+.empty-text {
+  display: block;
+  font-size: 32rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.empty-hint {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 页脚 */
+.preview-footer {
+  text-align: center;
+  padding-top: 32rpx;
+  border-top: 2rpx solid #f0f0f0;
+}
+
+.footer-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 隐藏画布 */
+/* 分享预览弹框 */
+.share-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 80%;
+  max-width: 600rpx;
+  background-color: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40rpx 32rpx 32rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.modal-close {
+  font-size: 48rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 0;
+  text-align: center;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.preview-image {
+  width: 100%;
+  display: block;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 16rpx;
+  padding: 32rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-btn.secondary {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.modal-btn.primary {
+  background-color: #007aff;
+  color: #fff;
+}
+
+.modal-btn.primary:active {
+  background-color: #0056cc;
+}
+
+.modal-btn.secondary:active {
+  background-color: #e0e0e0;
+}
+
+.share-canvas {
+  position: fixed;
+  top: -9999rpx;
+  left: -9999rpx;
+  width: 400rpx;
+  height: 800rpx;
+}

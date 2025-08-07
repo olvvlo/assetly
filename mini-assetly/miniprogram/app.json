@@ -1,0 +1,50 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/assets/assets",
+    "pages/chart/chart",
+    "pages/settings/settings",
+    "pages/add-asset/add-asset"
+  ],
+  "window": {
+    "backgroundColor": "#F8F9FA",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "简资 Assetly",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#007AFF",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "images/icons/wallet.png",
+        "selectedIconPath": "images/icons/wallet-active.png",
+        "text": "总览"
+      },
+      {
+        "pagePath": "pages/assets/assets",
+        "iconPath": "images/icons/category.png",
+        "selectedIconPath": "images/icons/category-active.png",
+        "text": "资产"
+      },
+      {
+        "pagePath": "pages/chart/chart",
+        "iconPath": "images/icons/activity.png",
+        "selectedIconPath": "images/icons/activity-active.png",
+        "text": "图表"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "iconPath": "images/icons/settings.png",
+        "selectedIconPath": "images/icons/settings-active.png",
+        "text": "设置"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

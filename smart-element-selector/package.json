@@ -1,0 +1,56 @@
+{
+  "name": "smart-element-selector",
+  "version": "1.0.0",
+  "description": "A smart element selector for web pages with OCR and AI analysis capabilities",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rollup -c rollup.config.mjs",
+    "dev": "rollup -c rollup.config.mjs -w",
+    "prepublishOnly": "npm run build",
+    "test": "jest"
+  },
+  "keywords": [
+    "element-selector",
+    "web-scraping",
+    "ocr",
+    "ai-analysis",
+    "browser-extension",
+    "dom-selection",
+    "smart-capture"
+  ],
+  "author": "olvvlo",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/smart-element-selector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/smart-element-selector/issues"
+  },
+  "homepage": "https://github.com/your-username/smart-element-selector#readme",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "dependencies": {
+    "html2canvas": "^1.4.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "rollup": "^4.9.6",
+    "rollup-plugin-dts": "^6.1.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "typescript": "^5.3.3"
+  }
+}

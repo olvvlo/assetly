@@ -1,0 +1,66 @@
+<!--components/markdown-text/markdown-text.wxml-->
+<view class="markdown-container">
+  <block wx:for="{{parsedContent}}" wx:key="index">
+    <!-- 一级标题 -->
+    <view wx:if="{{item.type === 'h1'}}" class="markdown-h1">
+      <rich-text nodes="{{item.content}}"></rich-text>
+    </view>
+    
+    <!-- 二级标题 -->
+    <view wx:elif="{{item.type === 'h2'}}" class="markdown-h2">
+      <rich-text nodes="{{item.content}}"></rich-text>
+    </view>
+    
+    <!-- 三级标题 -->
+    <view wx:elif="{{item.type === 'h3'}}" class="markdown-h3">
+      <rich-text nodes="{{item.content}}"></rich-text>
+    </view>
+    
+    <!-- 四级标题 -->
+    <view wx:elif="{{item.type === 'h4'}}" class="markdown-h4">
+      <rich-text nodes="{{item.content}}"></rich-text>
+    </view>
+    
+    <!-- 无序列表 -->
+    <view wx:elif="{{item.type === 'li'}}" class="markdown-li">
+      <text class="markdown-bullet">•</text>
+      <rich-text nodes="{{item.content}}"></rich-text>
+    </view>
+    
+    <!-- 有序列表 -->
+    <view wx:elif="{{item.type === 'ol'}}" class="markdown-ol">
+      <text class="markdown-number">{{index + 1}}.</text>
+      <rich-text nodes="{{item.content}}"></rich-text>
+    </view>
+    
+    <!-- 粗体段落 -->
+    <view wx:elif="{{item.type === 'bold'}}" class="markdown-bold">
+      <rich-text nodes="{{item.content}}"></rich-text>
+    </view>
+    
+    <!-- 表格 -->
+    <view wx:elif="{{item.type === 'table'}}" class="markdown-table">
+      <!-- 表格头部 -->
+      <view class="table-header">
+        <view wx:for="{{item.headers}}" wx:key="headerIndex" class="table-cell table-header-cell">
+          <rich-text nodes="{{item}}"></rich-text>
+        </view>
+      </view>
+      
+      <!-- 表格行 -->
+      <view wx:for="{{item.rows}}" wx:key="rowIndex" class="table-row">
+        <view wx:for="{{item}}" wx:key="cellIndex" class="table-cell">
+          <rich-text nodes="{{item}}"></rich-text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 空行 -->
+    <view wx:elif="{{item.type === 'break'}}" class="markdown-break"></view>
+    
+    <!-- 普通段落 -->
+    <view wx:else class="markdown-p">
+      <rich-text nodes="{{item.content}}"></rich-text>
+    </view>
+  </block>
+</view>

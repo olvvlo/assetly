@@ -1,0 +1,78 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-left">
+      <image class="app-icon" src="/images/app-icon.png" mode="aspectFit"></image>
+      <view class="title-group">
+        <text class="title">简资 Assetly</text>
+        <text class="subtitle">个人资产管理</text>
+      </view>
+    </view>
+    <view class="header-right">
+        <view class="add-btn" bindtap="goToAdd">
+          <text class="add-icon">+</text>
+        </view>
+      </view>
+  </view>
+
+  <!-- 总资产卡片 -->
+  <view class="total-card">
+    <view class="total-left">
+      <text class="total-label">总资产</text>
+      <text class="total-amount">{{formattedTotalAmount}}</text>
+    </view>
+    <view class="total-right">
+      <text class="asset-count-text">{{assetCount}}</text>
+      <text class="asset-count-label">项资产</text>
+    </view>
+  </view>
+
+  <!-- 资产列表 -->
+  <view class="asset-section" wx:if="{{assetCount > 0}}">
+    <view class="section-header">
+      <text class="section-title">资产列表</text>
+      <view class="sort-options">
+        <text class="sort-btn {{sortBy === 'time' ? 'active' : ''}}" bindtap="sortByTime">时间</text>
+        <text class="sort-btn {{sortBy === 'amount' ? 'active' : ''}}" bindtap="sortByAmount">金额</text>
+      </view>
+    </view>
+    <view class="category-groups">
+      <view class="category-group" wx:for="{{groupedAssets}}" wx:key="category">
+        <view class="category-header">
+          <view class="category-dot" style="background-color: {{item.color}}"></view>
+          <text class="category-name">{{item.category}}</text>
+          <text class="category-total">{{item.formattedTotal}}</text>
+        </view>
+        <view class="asset-list">
+          <view class="asset-item" wx:for="{{item.assets}}" wx:key="id" wx:for-item="asset" bindtap="editAsset" data-asset="{{asset}}">
+            <view class="asset-left">
+              <view class="asset-info">
+                <text class="asset-name">{{asset.name}}</text>
+                <view class="asset-meta">
+                  <text class="asset-date">{{formatDate(asset.createTime || asset.createdAt)}}</text>
+                  <text class="asset-holding" wx:if="{{asset.holdingTime}}">持有{{asset.holdingTime}}</text>
+                </view>
+              </view>
+              <text class="asset-remark" wx:if="{{asset.remark}}">{{asset.remark}}</text>
+            </view>
+            <view class="asset-right">
+            <text class="asset-amount number">{{asset.formattedDisplayValue}}</text>
+            <text class="asset-original number" wx:if="{{asset.currentValue !== undefined && asset.currentValue !== asset.amount}}">
+              原价: {{asset.formattedAmount}}
+            </text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{assetCount === 0}}">
+    <view class="empty-icon">📊</view>
+    <text class="empty-title">还没有资产记录</text>
+    <text class="empty-desc">点击上方按钮开始添加您的第一项资产</text>
+    <button class="empty-btn" bindtap="goToAdd">立即添加</button>
+  </view>
+</view>

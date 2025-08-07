@@ -1,0 +1,253 @@
+<!--pages/settings/settings.wxml-->
+<view class="container">
+  <!-- 个人信息 -->
+  <view class="settings-section">
+    <view class="section-title">个人信息</view>
+    
+    <!-- 出生年月日 -->
+    <picker mode="date" value="{{personalInfo.birthday}}" bindchange="onBirthdayChange">
+      <view class="setting-item">
+        <view class="setting-info">
+          <text class="setting-label">出生年月日</text>
+          <text class="setting-desc">生日信息</text>
+        </view>
+        <view class="setting-value">
+          <text class="value-text">{{personalInfo.birthday || '未设置'}}</text>
+          <text class="arrow">></text>
+        </view>
+      </view>
+    </picker>
+
+    <!-- 学历 -->
+    <picker range="{{educationOptions}}" value="{{educationIndex}}" bindchange="onEducationChange">
+      <view class="setting-item">
+        <view class="setting-info">
+          <text class="setting-label">学历</text>
+          <text class="setting-desc">教育背景</text>
+        </view>
+        <view class="setting-value">
+          <text class="value-text">{{personalInfo.education || '未设置'}}</text>
+          <text class="arrow">></text>
+        </view>
+      </view>
+    </picker>
+
+    <!-- 家庭情况 -->
+    <picker range="{{familyOptions}}" value="{{familyIndex}}" bindchange="onFamilyChange">
+      <view class="setting-item">
+        <view class="setting-info">
+          <text class="setting-label">家庭情况</text>
+          <text class="setting-desc">婚姻状况</text>
+        </view>
+        <view class="setting-value">
+          <text class="value-text">{{personalInfo.familyStatus || '未设置'}}</text>
+          <text class="arrow">></text>
+        </view>
+      </view>
+    </picker>
+
+    <!-- 职业 -->
+    <view class="setting-item" bindtap="showJobInput">
+      <view class="setting-info">
+        <text class="setting-label">职业</text>
+        <text class="setting-desc">工作职业</text>
+      </view>
+      <view class="setting-value">
+        <text class="value-text">{{personalInfo.job || '未设置'}}</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+
+    <!-- 所在地区 -->
+    <view class="setting-item" bindtap="showLocationInput">
+      <view class="setting-info">
+        <text class="setting-label">所在地区</text>
+        <text class="setting-desc">居住城市</text>
+      </view>
+      <view class="setting-value">
+        <text class="value-text">{{personalInfo.location || '未设置'}}</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 基础设置 -->
+  <view class="settings-section">
+    <view class="section-title">基础设置</view>
+    
+    <!-- DeepSeek API Key -->
+    <view class="setting-item" bindtap="showApiKeyInput">
+      <view class="setting-info">
+        <text class="setting-label">DeepSeek API Key</text>
+        <text class="setting-desc">用于AI分析功能</text>
+      </view>
+      <view class="setting-value">
+        <text class="value-text">{{settings.deepseekApiKey ? '已设置' : '未设置'}}</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+    
+    <!-- 通知设置 -->
+    <view class="setting-item">
+      <view class="setting-info">
+        <text class="setting-label">推送通知</text>
+        <text class="setting-desc">接收重要提醒</text>
+      </view>
+      <view class="setting-value">
+        <switch checked="{{settings.notifications}}" bindchange="onNotificationChange" />
+      </view>
+    </view>
+
+    <!-- 自动备份 -->
+    <view class="setting-item">
+      <view class="setting-info">
+        <text class="setting-label">自动备份</text>
+        <text class="setting-desc">定期备份数据到云端</text>
+      </view>
+      <view class="setting-value">
+        <switch checked="{{settings.autoBackup}}" bindchange="onAutoBackupChange" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据管理 -->
+  <view class="settings-section">
+    <view class="section-title">数据管理</view>
+    
+    <view class="setting-item" bindtap="exportData">
+      <view class="setting-info">
+        <text class="setting-label">导出数据</text>
+        <text class="setting-desc">将资产数据导出到剪贴板</text>
+      </view>
+      <view class="setting-value">
+        <text class="setting-icon">📤</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+
+    <view class="setting-item" bindtap="importData">
+      <view class="setting-info">
+        <text class="setting-label">导入数据</text>
+        <text class="setting-desc">从剪贴板导入资产数据</text>
+      </view>
+      <view class="setting-value">
+        <text class="setting-icon">📥</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+
+    <view class="setting-item danger" bindtap="clearData">
+      <view class="setting-info">
+        <text class="setting-label danger-text">清空数据</text>
+        <text class="setting-desc">删除所有资产数据</text>
+      </view>
+      <view class="setting-value">
+        <text class="setting-icon">🗑️</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关于 -->
+  <view class="settings-section">
+    <view class="section-title">关于</view>
+    
+    <view class="setting-item" bindtap="showAbout">
+      <view class="setting-info">
+        <text class="setting-label">关于简资</text>
+        <text class="setting-desc">版本信息和应用介绍</text>
+      </view>
+      <view class="setting-value">
+        <text class="value-text">v{{version}}</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 输入框弹框 -->
+  <view class="input-modal {{showJobInput ? 'show' : ''}}" wx:if="{{showJobInput}}">
+    <view class="input-content">
+      <view class="input-header">
+        <text class="input-title">输入职业</text>
+        <text class="input-close" bindtap="cancelJobInput">×</text>
+      </view>
+      <input class="input-field" placeholder="请输入您的职业" value="{{tempJob}}" bindinput="onJobInput" />
+      <view class="input-footer">
+        <button class="input-btn cancel" bindtap="cancelJobInput">取消</button>
+        <button class="input-btn confirm" bindtap="confirmJobInput">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="input-modal {{showApiKeyInput ? 'show' : ''}}" wx:if="{{showApiKeyInput}}">
+    <view class="input-content">
+      <view class="input-header">
+        <text class="input-title">设置 DeepSeek API Key</text>
+        <text class="input-close" bindtap="cancelApiKeyInput">×</text>
+      </view>
+      <input class="input-field" placeholder="请输入您的 DeepSeek API Key" value="{{tempApiKey}}" bindinput="onApiKeyInput" password="{{true}}" />
+      <view class="input-tip">
+        <text>用于AI分析功能，可在DeepSeek官网获取</text>
+      </view>
+      <view class="input-footer">
+        <button class="input-btn cancel" bindtap="cancelApiKeyInput">取消</button>
+        <button class="input-btn confirm" bindtap="confirmApiKeyInput">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="input-modal {{showLocationInput ? 'show' : ''}}" wx:if="{{showLocationInput}}">
+    <view class="input-content">
+      <view class="input-header">
+        <text class="input-title">输入所在地区</text>
+        <text class="input-close" bindtap="cancelLocationInput">×</text>
+      </view>
+      <input class="input-field" placeholder="请输入您的所在地区" value="{{tempLocation}}" bindinput="onLocationInput" />
+      <view class="input-footer">
+        <button class="input-btn cancel" bindtap="cancelLocationInput">取消</button>
+        <button class="input-btn confirm" bindtap="confirmLocationInput">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关于简资弹框 -->
+  <view class="about-modal {{showAbout ? 'show' : ''}}" wx:if="{{showAbout}}">
+    <view class="about-content">
+      <view class="about-header">
+        <text class="about-title">关于简资</text>
+        <text class="about-close" bindtap="closeAbout">×</text>
+      </view>
+      <view class="about-body">
+        <view class="about-version">
+          <text class="version-label">版本</text>
+          <text class="version-value">{{version}}</text>
+        </view>
+        <view class="about-description">
+          <text class="desc-text">简资是一款简洁的个人资产管理工具，帮助您轻松记录和管理个人资产。</text>
+        </view>
+        <view class="about-features">
+          <text class="features-title">功能特色</text>
+          <view class="feature-item">
+            <text class="feature-icon">📊</text>
+            <text class="feature-text">多种资产分类</text>
+          </view>
+          <view class="feature-item">
+            <text class="feature-icon">📈</text>
+            <text class="feature-text">图表分析</text>
+          </view>
+          <view class="feature-item">
+            <text class="feature-icon">💾</text>
+            <text class="feature-text">数据导入导出</text>
+          </view>
+          <view class="feature-item">
+            <text class="feature-icon">🎨</text>
+            <text class="feature-text">简洁易用的界面</text>
+          </view>
+        </view>
+      </view>
+      <view class="about-footer">
+        <button class="about-btn" bindtap="closeAbout">知道了</button>
+      </view>
+    </view>
+  </view>
+</view>

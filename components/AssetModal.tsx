@@ -182,7 +182,7 @@ export function AssetModal({ open, onOpenChange, onSubmit, editingAsset }: Asset
   };
 
   // Smart Capture functions
-  const startSmartCapture = () => {
+  const startSmartCapture = async () => {
     setIsSelecting(true);
     setCapturedImage(null);
     setElementInfo(null);
@@ -190,11 +190,14 @@ export function AssetModal({ open, onOpenChange, onSubmit, editingAsset }: Asset
     setAnalysisError(null);
     
     // 发送消息到content script开始智能选区
-    browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0]?.id) {
-        browser.tabs.sendMessage(tabs[0].id, { type: 'START_SMART_CAPTURE' });
+    try {
+      const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+      if (tab?.id) {
+        await browser.tabs.sendMessage(tab.id, { type: 'START_SMART_CAPTURE' });
       }
-    });
+    } catch (error) {
+      console.error('启动智能选区失败:', error);
+    }
   };
 
   const performOCRAnalysis = async (imageData: string) => {
