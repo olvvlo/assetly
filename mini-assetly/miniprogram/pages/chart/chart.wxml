@@ -145,7 +145,6 @@
         <text class="module-title">🎯 个人资产分析</text>
         <view class="analysis-actions" wx:if="{{!isAnalyzing}}">
           <button class="refresh-btn" bindtap="generateAIAnalysis" size="mini">
-            <text class="refresh-icon">↻</text>
             <text>重新分析</text>
           </button>
         </view>

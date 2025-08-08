@@ -96,7 +96,7 @@ Page({
 
   // 家庭情况相关
   onFamilyChange: function(e) {
-    const selectedFamily = this.data.familyOptions[e.detail.value];
+    const selectedFamily = this.data.familyStatusOptions[e.detail.value];
     this.setData({
       'personalInfo.familyStatus': selectedFamily,
       familyIndex: e.detail.value

@@ -1,4 +1,7 @@
 /**app.wxss**/
+/* 全局样式优化 - 遵循微信小程序设计指南 */
+
+/* 基础容器 */
 .container {
   display: flex;
   flex-direction: column;
@@ -6,6 +9,7 @@
   box-sizing: border-box;
 }
 
+/* 按钮样式重置 */
 button {
   background: initial;
 }
@@ -18,11 +22,37 @@ button:after {
   border: none;
 }
 
+/* 页面基础样式 */
 page {
   background: #f6f6f6;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  color: #333333;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+
+/* 全局主题色定义 */
+:root {
+  --primary-color: #1485ee;      /* 主题色 - 大数字 */
+  --secondary-color: #10aeff;    /* 次要主题色 - 小数字 */
+  --accent-color: #007aff;       /* 强调色 - 按钮、链接等 */
+  --success-color: #07c160;      /* 成功色 */
+  --warning-color: #ffbe00;      /* 警告色 */
+  --error-color: #fa5151;        /* 错误色 */
+  
+  --text-primary: #333333;       /* 主要文字颜色 */
+  --text-secondary: #666666;     /* 次要文字颜色 */
+  --text-tertiary: #999999;      /* 辅助文字颜色 */
+  
+  --bg-primary: #ffffff;         /* 主要背景色 */
+  --bg-secondary: #f8f9fa;       /* 次要背景色 */
+  --bg-tertiary: #f0f0f0;        /* 辅助背景色 */
+  
+  --border-color: #e1e5e9;       /* 边框颜色 */
+  --divider-color: #f0f0f0;      /* 分割线颜色 */
 }
 
 /* 全局数字字体设置 */
@@ -41,4 +71,77 @@ page {
 .summary-value,
 .top-value {
   font-family: system-ui, "PingFang SC", STHeiti, sans-serif;
+}
+
+/* 大数字样式 - 强调重要数据 */
+.large-number {
+  font-size: 56rpx;
+  font-weight: 600;
+  color: #1485ee;
+  line-height: 1.2;
+}
+
+/* 小数字样式 - 次要数据 */
+.small-number {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #10aeff;
+  line-height: 1.2;
+}
+
+/* 全局按钮样式 */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx 32rpx;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background-color: #1485ee;
+  color: #ffffff;
+}
+
+.btn-primary:active {
+  opacity: 0.8;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 标题样式 */
+.title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #666666;
+  margin-bottom: 24rpx;
+}
+
+/* 列表样式 */
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.list-item:last-child {
+  border-bottom: none;
 }

@@ -33,7 +33,7 @@
           </view>
           <text>{{formData.category || '请选择分类'}}</text>
         </view>
-        <text class="selector-arrow">></text>
+        <text class="selector-arrow"></text>
       </view>
       <text class="error-text" wx:if="{{errors.category}}">{{errors.category}}</text>
     </view>
@@ -70,7 +70,7 @@
       >
         <view class="date-display {{errors.purchaseDate ? 'error' : ''}}">
           <text class="date-text">{{formData.purchaseDate || '请选择日期'}}</text>
-          <text class="selector-arrow">></text>
+          <text class="selector-arrow"></text>
         </view>
       </picker>
       <text class="error-text" wx:if="{{errors.purchaseDate}}">{{errors.purchaseDate}}</text>
@@ -81,19 +81,21 @@
       <view class="form-label">
         <text class="label-text">预计估值</text>
         <text class="optional">（选填）</text>
+      </view>
+      <view class="value-input-container">
+        <input 
+          class="form-input number {{errors.currentValue ? 'error' : ''}}"
+          type="digit"
+          placeholder="不填则显示原价"
+          value="{{formData.currentValue}}"
+          data-field="currentValue"
+          bindinput="onNumberInput"
+        />
         <button class="ai-estimate-btn" wx:if="{{hasApiKey}}" bindtap="performAIEstimate" disabled="{{isEstimating}}">
           <text class="ai-icon">🤖</text>
           <text>{{isEstimating ? 'AI估值中...' : 'AI估值'}}</text>
         </button>
       </view>
-      <input 
-        class="form-input number {{errors.currentValue ? 'error' : ''}}"
-        type="digit"
-        placeholder="不填则显示原价"
-        value="{{formData.currentValue}}"
-        data-field="currentValue"
-        bindinput="onNumberInput"
-      />
       <text class="error-text" wx:if="{{errors.currentValue}}">{{errors.currentValue}}</text>
       <text class="form-hint" wx:if="{{aiEstimateResult}}">AI估值建议：{{aiEstimateResult}}</text>
     </view>

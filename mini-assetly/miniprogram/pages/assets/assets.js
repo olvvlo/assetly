@@ -189,10 +189,11 @@ Page({
   // 分享图片
   shareImage() {
     if (this.data.shareImagePath) {
-      // 生成文件名：应用名 + 日期
+      // 生成文件名：应用名 + 日期 + 时间戳
       const now = new Date();
       const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-      const fileName = `简资Assetly-${dateStr}.png`;
+      const timestamp = now.getTime();
+      const fileName = `口袋轻账-${dateStr}-${timestamp}.png`;
       
       // 直接使用微信分享API
       wx.shareFileMessage({
@@ -433,7 +434,7 @@ Page({
     ctx.fillStyle = '#9ca3af';
     ctx.font = '14px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('由 简资 Assetly 生成', 200, y);
+    ctx.fillText('由 口袋轻账 生成', 200, y);
 
     // 保存图片
         wx.canvasToTempFilePath({
@@ -471,27 +472,56 @@ Page({
 
   // 保存到相册
   saveToAlbum(filePath) {
-    wx.saveImageToPhotosAlbum({
-      filePath: filePath,
+    // 生成临时文件名，添加时间戳确保唯一性
+    const timestamp = new Date().getTime();
+    const tempFilePath = `${wx.env.USER_DATA_PATH}/口袋轻账-${timestamp}.png`;
+    
+    // 先将文件复制到临时目录，确保文件名唯一
+    wx.getFileSystemManager().copyFile({
+      srcPath: filePath,
+      destPath: tempFilePath,
       success: () => {
-        wx.showToast({
-          title: '保存成功',
-          icon: 'success'
+        // 保存到相册
+        wx.saveImageToPhotosAlbum({
+          filePath: tempFilePath,
+          success: () => {
+            wx.showToast({
+              title: '保存成功',
+              icon: 'success'
+            });
+            // 删除临时文件
+            wx.getFileSystemManager().unlink({
+              filePath: tempFilePath,
+              fail: (err) => console.error('删除临时文件失败', err)
+            });
+          },
+          fail: (error) => {
+            if (error.errMsg.includes('auth deny')) {
+              wx.showModal({
+                title: '提示',
+                content: '需要您授权保存相册',
+                showCancel: false
+              });
+            } else {
+              wx.showToast({
+                title: '保存失败',
+                icon: 'error'
+              });
+            }
+            // 删除临时文件
+            wx.getFileSystemManager().unlink({
+              filePath: tempFilePath,
+              fail: (err) => console.error('删除临时文件失败', err)
+            });
+          }
         });
       },
       fail: (error) => {
-        if (error.errMsg.includes('auth deny')) {
-          wx.showModal({
-            title: '提示',
-            content: '需要您授权保存相册',
-            showCancel: false
-          });
-        } else {
-          wx.showToast({
-            title: '保存失败',
-            icon: 'error'
-          });
-        }
+        console.error('复制文件失败', error);
+        wx.showToast({
+          title: '保存失败',
+          icon: 'error'
+        });
       }
     });
   },

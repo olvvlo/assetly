@@ -13,7 +13,7 @@
         </view>
         <view class="setting-value">
           <text class="value-text">{{personalInfo.birthday || '未设置'}}</text>
-          <text class="arrow">></text>
+          <text class="arrow"></text>
         </view>
       </view>
     </picker>
@@ -27,13 +27,13 @@
         </view>
         <view class="setting-value">
           <text class="value-text">{{personalInfo.education || '未设置'}}</text>
-          <text class="arrow">></text>
+          <text class="arrow"></text>
         </view>
       </view>
     </picker>
 
     <!-- 家庭情况 -->
-    <picker range="{{familyOptions}}" value="{{familyIndex}}" bindchange="onFamilyChange">
+    <picker range="{{familyStatusOptions}}" value="{{familyIndex}}" bindchange="onFamilyChange">
       <view class="setting-item">
         <view class="setting-info">
           <text class="setting-label">家庭情况</text>
@@ -41,7 +41,7 @@
         </view>
         <view class="setting-value">
           <text class="value-text">{{personalInfo.familyStatus || '未设置'}}</text>
-          <text class="arrow">></text>
+          <text class="arrow"></text>
         </view>
       </view>
     </picker>
@@ -54,7 +54,7 @@
       </view>
       <view class="setting-value">
         <text class="value-text">{{personalInfo.job || '未设置'}}</text>
-        <text class="arrow">></text>
+        <text class="arrow"></text>
       </view>
     </view>
 
@@ -66,7 +66,7 @@
       </view>
       <view class="setting-value">
         <text class="value-text">{{personalInfo.location || '未设置'}}</text>
-        <text class="arrow">></text>
+        <text class="arrow"></text>
       </view>
     </view>
   </view>
@@ -83,7 +83,7 @@
       </view>
       <view class="setting-value">
         <text class="value-text">{{settings.deepseekApiKey ? '已设置' : '未设置'}}</text>
-        <text class="arrow">></text>
+        <text class="arrow"></text>
       </view>
     </view>
     
@@ -121,7 +121,7 @@
       </view>
       <view class="setting-value">
         <text class="setting-icon">📤</text>
-        <text class="arrow">></text>
+        <text class="arrow"></text>
       </view>
     </view>
 
@@ -132,7 +132,7 @@
       </view>
       <view class="setting-value">
         <text class="setting-icon">📥</text>
-        <text class="arrow">></text>
+        <text class="arrow"></text>
       </view>
     </view>
 
@@ -143,7 +143,7 @@
       </view>
       <view class="setting-value">
         <text class="setting-icon">🗑️</text>
-        <text class="arrow">></text>
+        <text class="arrow"></text>
       </view>
     </view>
   </view>
@@ -154,12 +154,12 @@
     
     <view class="setting-item" bindtap="showAbout">
       <view class="setting-info">
-        <text class="setting-label">关于简资</text>
+        <text class="setting-label">关于口袋轻账</text>
         <text class="setting-desc">版本信息和应用介绍</text>
       </view>
       <view class="setting-value">
         <text class="value-text">v{{version}}</text>
-        <text class="arrow">></text>
+        <text class="arrow"></text>
       </view>
     </view>
   </view>
@@ -210,43 +210,22 @@
     </view>
   </view>
 
-  <!-- 关于简资弹框 -->
+  <!-- 关于口袋轻账弹框 -->
   <view class="about-modal {{showAbout ? 'show' : ''}}" wx:if="{{showAbout}}">
     <view class="about-content">
       <view class="about-header">
-        <text class="about-title">关于简资</text>
+        <text class="about-title">关于口袋轻账</text>
         <text class="about-close" bindtap="closeAbout">×</text>
       </view>
       <view class="about-body">
-        <view class="about-version">
-          <text class="version-label">版本</text>
-          <text class="version-value">{{version}}</text>
-        </view>
-        <view class="about-description">
-          <text class="desc-text">简资是一款简洁的个人资产管理工具，帮助您轻松记录和管理个人资产。</text>
-        </view>
+        <text class="desc-text">口袋轻账（v{{version}}）是一款简洁的个人资产管理工具，帮助您轻松记录和管理资产</text>
         <view class="about-features">
-          <text class="features-title">功能特色</text>
-          <view class="feature-item">
-            <text class="feature-icon">📊</text>
-            <text class="feature-text">多种资产分类</text>
-          </view>
-          <view class="feature-item">
-            <text class="feature-icon">📈</text>
-            <text class="feature-text">图表分析</text>
-          </view>
-          <view class="feature-item">
-            <text class="feature-icon">💾</text>
-            <text class="feature-text">数据导入导出</text>
-          </view>
-          <view class="feature-item">
-            <text class="feature-icon">🎨</text>
-            <text class="feature-text">简洁易用的界面</text>
-          </view>
+          <text class="features-title">主要功能：</text>
+          <text class="feature-item">• 资产记录与分类</text>
+          <text class="feature-item">• 资产分布可视化</text>
+          <text class="feature-item">• AI智能估值</text>
+          <text class="feature-item">• 数据导入导出</text>
         </view>
-      </view>
-      <view class="about-footer">
-        <button class="about-btn" bindtap="closeAbout">知道了</button>
       </view>
     </view>
   </view>

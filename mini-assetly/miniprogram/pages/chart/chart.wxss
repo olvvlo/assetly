@@ -1,6 +1,6 @@
 /* pages/chart/chart.wxss */
 .container {
-  background-color: #f8f9fa;
+  background-color: #f5f5f5;
   min-height: 100vh;
   padding: 0;
   width: 100%;
@@ -28,7 +28,7 @@
 }
 
 .tab-item.active {
-  background-color: #007aff;
+  background-color: #1485ee;
 }
 
 .tab-text {
@@ -165,7 +165,7 @@
 .score-value {
   font-size: 28px;
   font-weight: bold;
-  color: #2563eb;
+  color: #1485ee;
   display: block;
 }
 
@@ -641,12 +641,6 @@ ec-canvas {
 
 .refresh-btn::after {
   border: none;
-}
-
-.refresh-icon {
-  font-size: 28rpx;
-  font-weight: bold;
-  animation: rotate 2s linear infinite;
 }
 
 @keyframes rotate {

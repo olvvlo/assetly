@@ -5,8 +5,8 @@
     <view class="header-left">
       <image class="app-icon" src="/images/app-icon.png" mode="aspectFit"></image>
       <view class="title-group">
-        <text class="title">简资 Assetly</text>
-        <text class="subtitle">个人资产管理</text>
+        <text class="main-title">口袋轻账</text>
+        <text class="sub-title">个人资产管理</text>
       </view>
     </view>
     <view class="header-right">
@@ -70,7 +70,7 @@
 
   <!-- 空状态 -->
   <view class="empty-state" wx:if="{{assetCount === 0}}">
-    <view class="empty-icon">📊</view>
+    <view class="empty-icon"><image class="empty-image" src="/images/icons/empty.png" /></view>
     <text class="empty-title">还没有资产记录</text>
     <text class="empty-desc">点击上方按钮开始添加您的第一项资产</text>
     <button class="empty-btn" bindtap="goToAdd">立即添加</button>

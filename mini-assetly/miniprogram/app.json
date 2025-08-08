@@ -9,37 +9,37 @@
   "window": {
     "backgroundColor": "#F8F9FA",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#FFFFFF",
-    "navigationBarTitleText": "简资 Assetly",
-    "navigationBarTextStyle": "black"
+    "navigationBarBackgroundColor": "#1485ee",
+    "navigationBarTitleText": "口袋轻账",
+    "navigationBarTextStyle": "white"
   },
   "tabBar": {
     "color": "#999999",
-    "selectedColor": "#007AFF",
+    "selectedColor": "#1485ee",
     "backgroundColor": "#ffffff",
     "list": [
       {
         "pagePath": "pages/index/index",
-        "iconPath": "images/icons/wallet.png",
-        "selectedIconPath": "images/icons/wallet-active.png",
+        "iconPath": "images/icons/wallet-3d.png",
+        "selectedIconPath": "images/icons/wallet-3d.png",
         "text": "总览"
       },
       {
         "pagePath": "pages/assets/assets",
-        "iconPath": "images/icons/category.png",
-        "selectedIconPath": "images/icons/category-active.png",
+        "iconPath": "images/icons/category-3d.png",
+        "selectedIconPath": "images/icons/category-3d.png",
         "text": "资产"
       },
       {
         "pagePath": "pages/chart/chart",
-        "iconPath": "images/icons/activity.png",
-        "selectedIconPath": "images/icons/activity-active.png",
+        "iconPath": "images/icons/activity-3d.png",
+        "selectedIconPath": "images/icons/activity-3d.png",
         "text": "图表"
       },
       {
         "pagePath": "pages/settings/settings",
-        "iconPath": "images/icons/settings.png",
-        "selectedIconPath": "images/icons/settings-active.png",
+        "iconPath": "images/icons/settings-3d.png",
+        "selectedIconPath": "images/icons/settings-3d.png",
         "text": "设置"
       }
     ]

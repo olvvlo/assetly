@@ -1,6 +1,6 @@
 .container {
   padding: 32rpx;
-  background-color: #f8f9fa;
+  background-color: #f5f5f5;
   min-height: 100vh;
   padding-bottom: 200rpx; /* 为底部按钮留出空间 */
 }
@@ -28,18 +28,18 @@
 .label-text {
   font-size: 28rpx;
   font-weight: 500;
-  color: #1a1a1a;
+  color: #333333;
 }
 
 .required {
-  color: #ff3b30;
+  color: #fa5151;
   font-size: 28rpx;
   margin-left: 4rpx;
 }
 
 .optional {
-  color: #999;
-  font-size: 24rpx;
+  color: #999999;
+  font-size: 26rpx;
   margin-left: 8rpx;
 }
 
@@ -48,9 +48,9 @@
   height: 80rpx;
   padding: 0 20rpx;
   border: 2rpx solid #e1e5e9;
-  border-radius: 12rpx;
+  border-radius: 8rpx;
   font-size: 28rpx;
-  color: #1a1a1a;
+  color: #333333;
   background-color: #fff;
   box-sizing: border-box;
   outline: none;
@@ -59,11 +59,11 @@
 }
 
 .form-input:focus {
-  border-color: #007aff;
+  border-color: #1485ee;
 }
 
 .form-input.error {
-  border-color: #ff3b30;
+  border-color: #fa5151;
 }
 
 .form-textarea {
@@ -83,7 +83,7 @@
 }
 
 .form-textarea:focus {
-  border-color: #007aff;
+  border-color: #1485ee;
 }
 
 .input-wrapper {
@@ -168,13 +168,26 @@
 }
 
 .selector-arrow {
-  color: #999;
-  font-size: 24rpx;
+  width: 48rpx;
+  height: 48rpx;
+  display: block;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgba(195,189,189,1)'%3E%3Cpath fill='none' d='M0 0h24v24H0z'%3E%3C/path%3E%3Cpath d='M13.1717 12.0007L8.22192 7.05093L9.63614 5.63672L16.0001 12.0007L9.63614 18.3646L8.22192 16.9504L13.1717 12.0007Z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* 输入框容器 */
+.value-input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.value-input-container .form-input {
+  flex: 1;
 }
 
 /* AI估值按钮样式 */
 .ai-estimate-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1485ee 0%, #10aeff 100%);
   color: white;
   border: none;
   border-radius: 12rpx;
@@ -184,8 +197,10 @@
   display: flex;
   align-items: center;
   gap: 8rpx;
-  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4rpx 12rpx rgba(20, 133, 238, 0.3);
   transition: all 0.3s ease;
+  min-width: 120rpx;
+  justify-content: center;
 }
 
 .ai-estimate-btn:active {
