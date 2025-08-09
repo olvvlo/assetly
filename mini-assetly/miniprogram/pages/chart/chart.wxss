@@ -410,7 +410,8 @@
 }
 
 .category-icon {
-  font-size: 32rpx;
+  width: 32rpx;
+  height: 32rpx;
 }
 
 .category-name {
@@ -460,7 +461,8 @@
 }
 
 .comparison-icon {
-  font-size: 28rpx;
+  width: 32rpx;
+  height: 32rpx;
 }
 
 .comparison-name {
@@ -591,7 +593,8 @@ ec-canvas {
 }
 
 .top-icon {
-  font-size: 32rpx;
+  width: 32rpx;
+  height: 32rpx;
 }
 
 .top-name {
@@ -881,4 +884,157 @@ ec-canvas {
 .empty-text {
   font-size: 28rpx;
   color: #999;
+}
+
+/* ========== 躺平生活分析样式 ========== */
+
+/* 躺平分析内容 */
+.life-analysis-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+/* 生活摘要卡片 */
+.life-summary-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16rpx;
+  padding: 32rpx;
+  color: #fff;
+  box-shadow: 0 8rpx 32rpx rgba(102, 126, 234, 0.3);
+}
+
+.life-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 24rpx;
+}
+
+.life-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.life-stat-label {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+.life-stat-value {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+/* 推荐城市 */
+.recommended-cities {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.cities-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.city-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  border: 2rpx solid #e9ecef;
+}
+
+.city-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.city-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.city-cost {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.city-duration {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #007aff;
+}
+
+/* 生活方案 */
+.life-plans {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.plans-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.plan-item {
+  padding: 24rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  border: 2rpx solid #e9ecef;
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.plan-type {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.plan-duration {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #007aff;
+}
+
+.plan-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.plan-budget {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.plan-description {
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* 通用标题样式 */
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+  display: block;
 }

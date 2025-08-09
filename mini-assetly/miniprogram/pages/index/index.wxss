@@ -64,10 +64,8 @@
 }
 
 .add-icon {
-  color: #fff;
-  font-size: 48rpx;
-  font-weight: 900;
-  margin-top: -4rpx;
+  width: 60%;
+  height: 60%;
 }
 
 /* 总资产卡片 */
@@ -195,7 +193,7 @@
 
 /* 资产列表 */
 .asset-section {
-  margin: 24rpx 16rpx;
+  margin: 0 16rpx 24rpx;
   padding: 32rpx;
   background-color: #fff;
   border-radius: 16rpx;
@@ -236,23 +234,25 @@
 }
 
 .category-group {
-  border: 1rpx solid #f0f0f0;
-  border-radius: 12rpx;
+  background-color: #fff;
+  border-radius: 16rpx;
   overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  border: 1rpx solid #f0f0f0;
+  margin-bottom: 16rpx;
 }
 
 .category-header {
   display: flex;
   align-items: center;
-  padding: 16rpx 20rpx;
+  padding: 20rpx 24rpx;
   background-color: #f8f9fa;
-  border-bottom: 1rpx solid #f0f0f0;
+  cursor: pointer;
 }
 
-.category-header .category-dot {
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: 8rpx;
+.category-icon {
+  width: 32rpx;
+  height: 32rpx;
   margin-right: 16rpx;
 }
 
@@ -267,11 +267,31 @@
   font-size: 28rpx;
   font-weight: 600;
   color: #007aff;
+  margin-right: 16rpx;
+}
+
+.collapse-icon {
+  width: 32rpx;
+  height: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.collapse-icon.collapsed {
+  transform: rotate(-90deg);
+}
+
+.collapse-icon text {
+  font-size: 20rpx;
+  color: #666;
 }
 
 .asset-list {
   display: flex;
   flex-direction: column;
+  padding-top: 8rpx;
 }
 
 .asset-item {
@@ -279,11 +299,16 @@
   align-items: flex-start;
   justify-content: space-between;
   padding: 24rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  background-color: #fff;
+  border-radius: 12rpx;
+  margin: 8rpx 16rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  border: 1rpx solid #f0f0f0;
 }
 
 .asset-item:last-child {
   border-bottom: none;
+  margin-bottom: 16rpx;
 }
 
 .asset-left {
@@ -308,7 +333,6 @@
 .asset-meta {
   display: flex;
   align-items: center;
-  gap: 16rpx;
 }
 
 .asset-date {
@@ -316,28 +340,24 @@
   color: #999;
 }
 
-.asset-holding {
+.asset-holding-tag {
   font-size: 22rpx;
   color: #007aff;
   background-color: #e6f3ff;
-  padding: 2rpx 8rpx;
-  border-radius: 8rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  margin-left: 24rpx;
+  white-space: nowrap;
 }
 
 .asset-remark {
-  font-size: 24rpx;
+  font-size: 20rpx;
   color: #666;
   margin-top: 4rpx;
 }
 
-.asset-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4rpx;
-}
-
 .asset-amount {
+  float: right;
   font-size: 28rpx;
   color: #1a1a1a;
   font-weight: 600;

@@ -10,18 +10,39 @@ Page({
     showShareModal: false,
     shareImagePath: '',
     categories: [
-      { key: '现金', name: '现金', color: '#48dbfb', icon: '💵' },
-      { key: '存款', name: '存款', color: '#0abde3', icon: '🏦' },
-      { key: '房产', name: '房产', color: '#ff6b6b', icon: '🏠' },
-      { key: '车辆', name: '车辆', color: '#4ecdc4', icon: '🚗' },
-      { key: '基金', name: '基金', color: '#96ceb4', icon: '💰' },
-      { key: '股票', name: '股票', color: '#45b7d1', icon: '📈' },
-      { key: '债券', name: '债券', color: '#feca57', icon: '📊' },
-      { key: '数字货币', name: '数字货币', color: '#ff9ff3', icon: '₿' },
-      { key: '黄金', name: '黄金', color: '#ffd700', icon: '🥇' },
-      { key: '收藏品', name: '收藏品', color: '#ff7675', icon: '🎨' },
-      { key: '其他', name: '其他', color: '#a0a0a0', icon: '📦' }
+      { key: '现金', name: '现金', color: '#10B981', icon: '/images/category/cash.png' },
+      { key: '存款', name: '存款', color: '#3B82F6', icon: '/images/category/credit.png' },
+      { key: '房产', name: '房产', color: '#F59E0B', icon: '/images/category/house.png' },
+      { key: '车辆', name: '车辆', color: '#EF4444', icon: '/images/category/car.png' },
+      { key: '基金', name: '基金', color: '#8B5CF6', icon: '/images/category/fund.png' },
+      { key: '股票', name: '股票', color: '#EC4899', icon: '/images/category/stock.png' },
+      { key: '投资', name: '投资', color: '#8B5CF6', icon: '/images/category/investment.png' },
+      { key: '其他', name: '其他', color: '#6B7280', icon: '/images/category/other.png' }
     ]
+  },
+
+  calculateHoldingTime(purchaseDate) {
+    if (!purchaseDate) return '';
+    
+    const now = new Date();
+    const purchase = new Date(purchaseDate);
+    const diffTime = Math.abs(now - purchase);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 30) {
+      return `${diffDays}天`;
+    } else if (diffDays < 365) {
+      const months = Math.floor(diffDays / 30);
+      return `${months}个月`;
+    } else {
+      const years = Math.floor(diffDays / 365);
+      const remainingMonths = Math.floor((diffDays % 365) / 30);
+      if (remainingMonths > 0) {
+        return `${years}年${remainingMonths}个月`;
+      } else {
+        return `${years}年`;
+      }
+    }
   },
 
   onLoad() {
@@ -50,7 +71,7 @@ Page({
           category,
           amount,
           formattedAmount: this.formatCurrency(amount),
-          percentage: totalAmount > 0 ? (amount / totalAmount * 100).toFixed(1) : '0',
+          percentage: totalAmount > 0 ? (amount / totalAmount * 100).toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0',
           color: this.getCategoryColor(category),
           icon: this.getCategoryIcon(category)
         }));
@@ -64,7 +85,8 @@ Page({
           formattedAmount: this.formatCurrency(asset.amount),
           formattedCreatedAt: this.formatDate(asset.createdAt || asset.createTime),
           formattedPurchaseDate: this.formatDate(asset.purchaseDate),
-          categoryIcon: this.getCategoryIcon(asset.category)
+          categoryIcon: this.getCategoryIcon(asset.category),
+          holdingTime: this.calculateHoldingTime(asset.purchaseDate)
         }))
         .sort((a, b) => b.displayValue - a.displayValue);
 
@@ -124,8 +146,18 @@ Page({
     }
     
     const num = Number(amount);
+    
+    // 强制使用英文逗号作为千分位分隔符，覆盖系统默认行为
+    const formatNumber = (n) => {
+      // 转换为字符串并分离整数和小数部分
+      const parts = n.toString().split('.');
+      // 使用正则表达式强制添加英文逗号，确保不受系统语言影响
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.join('.');
+    };
+    
     // 总是显示为整数，不显示小数点
-    return `¥${Math.round(num).toLocaleString('zh-CN')}`;
+    return `¥${formatNumber(Math.round(num))}`;
   },
 
   // 格式化日期
@@ -231,7 +263,7 @@ Page({
           // 动态计算画布高度
           const { categoryData, allAssets } = this.data;
           const baseHeight = 400; // 基础高度（标题、总资产、页脚等）
-          const categoryHeight = categoryData.length * 35 + 80; // 资产分布高度
+          const categoryHeight = categoryData.length * 30 + 80; // 资产分布高度，减少行间距
           const assetHeight = Math.min(allAssets.length, 10) * 65 + 80; // 资产列表高度，最多显示10个
           const totalHeight = baseHeight + categoryHeight + assetHeight;
           
@@ -321,16 +353,6 @@ Page({
     y += 40;
 
     categoryData.forEach(item => {
-      // 绘制分隔线
-      if (categoryData.indexOf(item) > 0) {
-        ctx.strokeStyle = '#f5f5f5';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(32, y - 10);
-        ctx.lineTo(368, y - 10);
-        ctx.stroke();
-      }
-
       // 颜色圆点
       ctx.fillStyle = item.color;
       ctx.beginPath();
@@ -348,24 +370,16 @@ Page({
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
 
-      // 分类名称和图标
+      // 分类名称（不显示图标路径，只显示分类名称）
       ctx.fillStyle = '#374151';
       ctx.font = '16px sans-serif';
-      ctx.fillText(`${item.icon} ${item.category}`, 65, y + 15);
+      ctx.fillText(item.category, 65, y + 15);
 
-      // 百分比
-      ctx.fillStyle = '#6b7280';
+      // 百分比（简单文本显示，不使用标签样式）
+      ctx.fillStyle = item.color;
       ctx.font = '14px sans-serif';
-      ctx.fillStyle = '#f8f9fa';
-      this.roundRect(ctx, 180, y + 2, 50, 26, 13);
-      ctx.fill();
-      ctx.strokeStyle = '#e9ecef';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-      
-      ctx.fillStyle = '#666';
       ctx.textAlign = 'center';
-      ctx.fillText(`${item.percentage}%`, 205, y + 18);
+      ctx.fillText(`${item.percentage}%`, 205, y + 15);
 
       // 金额
       ctx.fillStyle = '#1f2937';
@@ -374,7 +388,7 @@ Page({
       ctx.fillText(this.formatCurrency(item.amount), 368, y + 15);
       ctx.textAlign = 'left';
 
-      y += 35;
+      y += 30; // 减少行间距
     });
 
     y += 15; // 减少间距
@@ -402,10 +416,10 @@ Page({
         ? asset.currentValue 
         : asset.amount;
       
-      // 资产名称和图标
+      // 资产名称（不显示图标路径，只显示资产名称）
       ctx.fillStyle = '#374151';
       ctx.font = '16px sans-serif';
-      ctx.fillText(`${this.getCategoryIcon(asset.category)} ${asset.name}`, 45, y + 15);
+      ctx.fillText(asset.name, 45, y + 15);
 
       // 分类和日期
       ctx.fillStyle = '#6b7280';

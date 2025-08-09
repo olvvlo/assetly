@@ -8,14 +8,16 @@ Page({
     categoryTotals: {},
     groupedAssets: [],
     sortBy: 'time', // 'time' 或 'amount'
+    collapsedCategories: {}, // 记录折叠状态
     categories: [
-      { key: '现金', name: '现金', color: '#10B981' },
-      { key: '存款', name: '存款', color: '#3B82F6' },
-      { key: '房产', name: '房产', color: '#F59E0B' },
-      { key: '车辆', name: '车辆', color: '#EF4444' },
-      { key: '基金', name: '基金', color: '#8B5CF6' },
-      { key: '股票', name: '股票', color: '#EC4899' },
-      { key: '其他', name: '其他', color: '#6B7280' }
+      { key: '现金', name: '现金', color: '#10B981', icon: '/images/category/cash.png' },
+      { key: '存款', name: '存款', color: '#3B82F6', icon: '/images/category/credit.png' },
+      { key: '房产', name: '房产', color: '#F59E0B', icon: '/images/category/house.png' },
+      { key: '车辆', name: '车辆', color: '#EF4444', icon: '/images/category/car.png' },
+      { key: '基金', name: '基金', color: '#8B5CF6', icon: '/images/category/fund.png' },
+      { key: '股票', name: '股票', color: '#EC4899', icon: '/images/category/stock.png' },
+      { key: '投资', name: '投资', color: '#8B5CF6', icon: '/images/category/investment.png' },
+      { key: '其他', name: '其他', color: '#6B7280', icon: '/images/category/other.png' }
     ]
   },
 
@@ -93,9 +95,11 @@ Page({
       return {
         category: category,
         color: categoryInfo ? categoryInfo.color : '#6B7280',
+        icon: categoryInfo ? categoryInfo.icon : '/images/category/other.png',
         total: total,
         formattedTotal: formattedTotal,
-        assets: categoryAssets
+        assets: categoryAssets,
+        collapsed: this.data.collapsedCategories[category] || false
       };
     });
 
@@ -104,6 +108,26 @@ Page({
 
     this.setData({
       groupedAssets: groupedArray
+    });
+  },
+
+  // 切换分类折叠状态
+  toggleCategory: function(e) {
+    const category = e.currentTarget.dataset.category;
+    const collapsedCategories = { ...this.data.collapsedCategories };
+    collapsedCategories[category] = !collapsedCategories[category];
+    
+    // 更新分组数据中的折叠状态
+    const groupedAssets = this.data.groupedAssets.map(group => {
+      if (group.category === category) {
+        return { ...group, collapsed: collapsedCategories[category] };
+      }
+      return group;
+    });
+    
+    this.setData({
+      collapsedCategories: collapsedCategories,
+      groupedAssets: groupedAssets
     });
   },
 
@@ -172,7 +196,7 @@ Page({
   // 计算分类百分比
   getCategoryPercentage: function(categoryAmount) {
     if (this.data.totalAmount === 0) return 0;
-    return ((categoryAmount / this.data.totalAmount) * 100).toFixed(1);
+    return ((categoryAmount / this.data.totalAmount) * 100).toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   },
 
   // 计算持有时间

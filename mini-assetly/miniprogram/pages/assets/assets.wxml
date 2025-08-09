@@ -19,8 +19,8 @@
     <!-- 总资产 -->
     <view class="total-asset">
       <text class="total-label">总资产</text>
-      <text class="total-amount">{{formattedTotalAmount}}</text>
-      <text class="total-count">共 {{assets.length}} 项资产</text>
+      <text class="total-amount number">{{formattedTotalAmount}}</text>
+      <text class="total-count">共 <text class="number">{{assets.length}}</text> 项资产</text>
     </view>
 
     <!-- 资产分布 -->
@@ -29,11 +29,11 @@
       <view class="category-list">
         <view class="category-item" wx:for="{{categoryData}}" wx:key="category">
           <view class="category-info">
-            <view class="category-dot" style="background-color: {{item.color}}"></view>
-            <text class="category-name">{{item.icon}} {{item.category}}</text>
-            <text class="category-percentage">{{item.percentage}}%</text>
+            <image class="category-icon" src="{{item.icon}}" mode="aspectFit"></image>
+            <text class="category-name">{{item.category}}</text>
+            <text class="category-percentage number">{{item.percentage}}%</text>
           </view>
-          <text class="category-amount">{{item.formattedAmount}}</text>
+          <text class="category-amount number">{{item.formattedAmount}}</text>
         </view>
       </view>
     </view>
@@ -45,18 +45,18 @@
         <view class="asset-item" wx:for="{{allAssets}}" wx:key="id" wx:for-index="index">
           <view class="asset-main">
             <view class="asset-header">
-              <text class="asset-icon">{{item.categoryIcon}}</text>
+              <image class="asset-category-icon" src="{{item.categoryIcon}}" mode="aspectFit"></image>
               <text class="asset-name">{{item.name}}</text>
             </view>
             <view class="asset-meta">
               <text class="asset-category">{{item.category}}</text>
-              <text class="asset-date">{{item.formattedCreatedAt}}</text>
+              <view class="asset-holding-tag" wx:if="{{item.holdingTime}}">{{item.holdingTime}}</view>
             </view>
             <text class="asset-remark" wx:if="{{item.remark}}">{{item.remark}}</text>
           </view>
           <view class="asset-value">
-            <text class="current-value">{{item.formattedDisplayValue}}</text>
-            <text class="original-value" wx:if="{{item.currentValue !== undefined && item.currentValue !== item.amount}}">
+            <text class="current-value number">{{item.formattedDisplayValue}}</text>
+            <text class="original-value number" wx:if="{{item.currentValue !== undefined && item.currentValue !== item.amount}}">
               原价: {{item.formattedAmount}}
             </text>
             <text class="purchase-date">{{item.formattedPurchaseDate}}</text>

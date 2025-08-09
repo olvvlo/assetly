@@ -14,16 +14,16 @@ Page({
       remark: ''
     },
     categories: [
-      { key: '现金', name: '现金', color: '#10B981' },
-      { key: '存款', name: '存款', color: '#3B82F6' },
-      { key: '房产', name: '房产', color: '#F59E0B' },
-      { key: '车辆', name: '车辆', color: '#EF4444' },
-      { key: '基金', name: '基金', color: '#8B5CF6' },
-      { key: '股票', name: '股票', color: '#EC4899' },
-      { key: '其他', name: '其他', color: '#6B7280' }
+      { key: '现金', name: '现金', icon: '/images/category/money.png', color: '#10B981' },
+      { key: '房产', name: '房产', icon: '/images/category/house.png', color: '#F59E0B' },
+      { key: '车辆', name: '车辆', icon: '/images/category/car.png', color: '#EF4444' },
+      { key: '投资', name: '投资', icon: '/images/category/investment.png', color: '#8B5CF6' },
+      { key: '存款', name: '存款', icon: '/images/category/credit.png', color: '#3B82F6' },
+      { key: '其他', name: '其他', icon: '/images/category/other.png', color: '#6B7280' }
     ],
     showCategoryPicker: false,
     categoryIndex: 0,
+    newCategoryName: '',
     maxDate: '',
     errors: {},
     hasApiKey: false,
@@ -139,8 +139,8 @@ Page({
   },
 
   // 分类选择
-  onCategoryChange: function(e) {
-    const index = e.detail.value[0]; // 修复：获取数组中的第一个值
+  onCategorySelect: function(e) {
+    const index = e.currentTarget.dataset.index;
     const category = this.data.categories[index];
     
     this.setData({
@@ -148,6 +148,60 @@ Page({
       'formData.category': category.key,
       showCategoryPicker: false,
       'errors.category': ''
+    });
+  },
+
+  // 新增分类名称输入
+  onNewCategoryInput: function(e) {
+    this.setData({
+      newCategoryName: e.detail.value
+    });
+  },
+
+  // 添加新分类
+  addNewCategory: function() {
+    const { newCategoryName, categories } = this.data;
+    
+    if (!newCategoryName.trim()) {
+      wx.showToast({
+        title: '请输入分类名称',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 检查是否已存在
+    const exists = categories.some(cat => cat.name === newCategoryName.trim());
+    if (exists) {
+      wx.showToast({
+        title: '分类已存在',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 添加新分类
+    const newCategory = {
+      key: newCategoryName.trim(),
+      name: newCategoryName.trim(),
+      icon: '/images/category/other.png',
+      color: '#6B7280'
+    };
+
+    const updatedCategories = [...categories, newCategory];
+    
+    this.setData({
+      categories: updatedCategories,
+      categoryIndex: updatedCategories.length - 1,
+      'formData.category': newCategory.key,
+      newCategoryName: '',
+      showCategoryPicker: false,
+      'errors.category': ''
+    });
+
+    wx.showToast({
+      title: '分类添加成功',
+      icon: 'success'
     });
   },
 
@@ -342,7 +396,7 @@ Page({
     const purchaseDate = new Date(formData.purchaseDate);
     const currentDate = new Date();
     const holdingMonths = Math.floor((currentDate - purchaseDate) / (1000 * 60 * 60 * 24 * 30));
-    const holdingYears = (holdingMonths / 12).toFixed(1);
+    const holdingYears = (holdingMonths / 12).toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
     // 构建AI估值提示
     const prompt = `作为专业的资产评估师，请基于以下信息对资产进行准确的市场价值估值：
@@ -410,7 +464,7 @@ Page({
             const finalValue = Math.max(minValue, Math.min(maxValue, estimatedValue));
 
             resolve({
-              estimatedValue: finalValue.toFixed(2),
+              estimatedValue: finalValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
               originalResponse: aiResponse
             });
           } catch (error) {

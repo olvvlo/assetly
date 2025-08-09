@@ -19,7 +19,7 @@
     <view class="module-card">
       <view class="module-header">
         <text class="module-title">📊 矩形树图分析</text>
-        <text class="total-amount">总计：{{formattedTotalAmount}}</text>
+        <text class="total-amount number">总计：{{formattedTotalAmount}}</text>
       </view>
       
       <view class="pie-section" wx:if="{{categoryData.length > 0}}">
@@ -34,11 +34,11 @@
           <view class="category-item" wx:for="{{categoryData}}" wx:key="key">
             <view class="category-info">
               <view class="category-dot" style="background-color: {{item.color}}"></view>
-              <text class="category-icon">{{item.icon}}</text>
+              <image class="category-icon" src="{{item.icon}}" mode="aspectFit"></image>
               <text class="category-name">{{item.name}}</text>
             </view>
             <view class="category-stats">
-              <text class="category-amount">{{item.formattedValue}}</text>
+              <text class="category-amount number">{{item.formattedValue}}</text>
               <text class="category-percentage">{{item.percentage}}%</text>
             </view>
           </view>
@@ -60,7 +60,7 @@
       <view class="comparison-section" wx:if="{{categoryComparison.length > 0}}">
         <view class="comparison-item" wx:for="{{categoryComparison}}" wx:key="key">
           <view class="comparison-info">
-            <text class="comparison-icon">{{item.icon}}</text>
+            <image class="comparison-icon" src="{{item.icon}}" mode="aspectFit"></image>
             <text class="comparison-name">{{item.name}}</text>
           </view>
           <view class="comparison-bar">
@@ -68,7 +68,7 @@
                   style="width: {{item.barWidth}}%; background-color: {{item.color}};">
             </view>
           </view>
-          <text class="comparison-value">{{item.formattedValue}}</text>
+          <text class="comparison-value number">{{item.formattedValue}}</text>
         </view>
       </view>
 
@@ -108,28 +108,28 @@
         <view class="summary-grid">
           <view class="summary-item">
             <text class="summary-label">资产总数</text>
-            <text class="summary-value">{{categorySummary.totalAssets}}</text>
+            <text class="summary-value number">{{categorySummary.totalAssets}}</text>
           </view>
           <view class="summary-item">
             <text class="summary-label">资产总值</text>
-            <text class="summary-value">{{categorySummary.formattedTotalValue}}</text>
+            <text class="summary-value number">{{categorySummary.formattedTotalValue}}</text>
           </view>
           <view class="summary-item">
             <text class="summary-label">分类数量</text>
-            <text class="summary-value">{{categorySummary.categoryCount}}</text>
+            <text class="summary-value number">{{categorySummary.categoryCount}}</text>
           </view>
           <view class="summary-item">
             <text class="summary-label">平均价值</text>
-            <text class="summary-value">{{categorySummary.formattedAverageValue}}</text>
+            <text class="summary-value number">{{categorySummary.formattedAverageValue}}</text>
           </view>
         </view>
 
         <view class="top-category" wx:if="{{categorySummary.topCategory}}">
           <text class="top-label">最大资产类别</text>
           <view class="top-info">
-            <text class="top-icon">{{categorySummary.topCategory.icon}}</text>
+            <image class="top-icon" src="{{categorySummary.topCategory.icon}}" mode="aspectFit"></image>
             <text class="top-name">{{categorySummary.topCategory.name}}</text>
-            <text class="top-value">{{categorySummary.topCategory.formattedValue}}</text>
+            <text class="top-value number">{{categorySummary.topCategory.formattedValue}}</text>
           </view>
         </view>
       </view>
@@ -167,8 +167,8 @@
           <view class="score-stats">
             <view class="score-item">
               <text class="score-label">综合评分</text>
-              <text class="score-value">{{rankingScore}}</text>
-              <text class="score-total">总分 {{totalScore}}/600</text>
+              <text class="score-value number">{{rankingScore}}</text>
+              <text class="score-total">总分 <text class="number">{{totalScore}}</text>/600</text>
             </view>
             
             <view class="ranking-info">
@@ -211,12 +211,12 @@
           <view class="radar-item" wx:for="{{radarData}}" wx:key="dimension">
             <view class="radar-info">
               <text class="radar-dimension">{{item.dimension}}</text>
-              <text class="radar-score-text">{{item.score}}分</text>
+              <text class="radar-score-text number">{{item.score}}分</text>
             </view>
             <view class="radar-bar">
               <view class="radar-fill" 
                     style="width: {{item.score}}%; background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)">
-                <text class="radar-bar-score">{{item.score.toFixed(1)}}</text>
+                <text class="radar-bar-score number">{{item.formattedScore}}</text>
               </view>
             </view>
           </view>
@@ -224,25 +224,71 @@
       </view>
     </view>
 
-    <!-- 详细分析说明 -->
-    <view class="module-card analysis-note" wx:if="{{!isAnalyzing && aiAnalysis}}">
+    <!-- 躺平生活分析 -->
+    <view class="module-card analysis-note" wx:if="{{!isAnalyzing}}">
       <view class="module-header">
-        <text class="module-title">📝 详细分析报告</text>
-        <view class="analysis-type-badge">
-          <text class="type-text" wx:if="{{analysisType === 'ai'}}">🤖 AI分析</text>
-          <text class="type-text" wx:else>📊 本地分析</text>
+        <text class="module-title">🛋️ 躺平生活分析</text>
+      </view>
+      
+      <!-- 加载状态 -->
+      <view class="loading-state" wx:if="{{isAnalyzing}}">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">正在分析您的躺平生活方案...</text>
+      </view>
+      
+      <!-- 躺平分析结果 -->
+      <view class="life-analysis-content" wx:else>
+        <!-- 基本信息卡片 -->
+        <view class="life-summary-card">
+          <view class="life-stats">
+            <view class="life-stat-item">
+              <text class="life-stat-label">可躺平时长</text>
+              <text class="life-stat-value">{{lifeDuration}}</text>
+            </view>
+            <view class="life-stat-item">
+              <text class="life-stat-label">建议日预算</text>
+              <text class="life-stat-value">¥{{dailyBudget}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 推荐城市 -->
+        <view class="recommended-cities" wx:if="{{recommendedCities.length > 0}}">
+          <text class="section-title">🏙️ 推荐躺平城市</text>
+          <view class="cities-list">
+            <view class="city-item" wx:for="{{recommendedCities}}" wx:key="name">
+              <view class="city-info">
+                <text class="city-name">{{item.name}}</text>
+                <text class="city-cost">月开销: ¥{{item.monthlyCost}}</text>
+              </view>
+              <text class="city-duration">{{item.duration}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 生活方案对比 -->
+        <view class="life-plans" wx:if="{{lifePlans.length > 0}}">
+          <text class="section-title">📋 生活方案对比</text>
+          <view class="plans-list">
+            <view class="plan-item" wx:for="{{lifePlans}}" wx:key="type">
+              <view class="plan-header">
+                <text class="plan-type">{{item.type}}</text>
+                <text class="plan-duration">{{item.duration}}</text>
+              </view>
+              <view class="plan-details">
+                <text class="plan-budget">日预算: ¥{{item.dailyBudget}}</text>
+                <text class="plan-description">{{item.description}}</text>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
       
-      <view class="analysis-content">
-        <markdown-renderer content="{{aiAnalysis}}"></markdown-renderer>
-      </view>
-      
       <view class="note-content">
-        <text class="note-item">* 评分基于您的个人信息、资产配置和同龄人群数据进行综合计算。</text>
-        <text class="note-item" wx:if="{{analysisType === 'ai'}}">* AI分析基于您的个人信息和资产状况，提供个性化的专业建议。</text>
-        <text class="note-item" wx:else>* 本地分析基于通用算法，如需更精准分析请在设置中配置AI密钥。</text>
-        <text class="note-item">* 排名数据基于国家统计局、央行等权威机构发布的家庭资产调研数据计算，具有较高参考价值。</text>
+        <text class="note-item">* 躺平分析基于当前资产状况和平均生活成本计算。</text>
+        <text class="note-item" wx:if="{{analysisType === 'ai'}}">* AI分析考虑了您的个人信息和地区差异，提供更精准的建议。</text>
+        <text class="note-item" wx:else>* 本地分析基于通用数据，如需个性化分析请在设置中配置AI密钥。</text>
+        <text class="note-item">* 实际生活成本因个人习惯和消费水平而异，请根据实际情况调整。</text>
       </view>
     </view>
   </view>

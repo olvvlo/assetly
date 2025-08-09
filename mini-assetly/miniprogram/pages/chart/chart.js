@@ -4,6 +4,13 @@ import * as echarts from '../../components/ec-canvas/echarts';
 const app = getApp();
 
 Page({
+  // 格式化分数的辅助函数
+  formatScore: function(score) {
+    const num = Number(score);
+    if (isNaN(num)) return '0.0';
+    return num.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  },
+  
   data: {
     assets: [],
     tabType: 'distribution', // 'distribution' | 'analysis'
@@ -37,14 +44,21 @@ Page({
     isAnalyzing: false,
     isRankingAnalyzing: false,
     
+    // 躺平生活分析数据
+    lifeDuration: '',
+    dailyBudget: 0,
+    recommendedCities: [],
+    lifePlans: [],
+    analysisType: 'local', // 'ai' | 'local'
+    
     categories: [
-      { key: '现金', name: '现金', color: '#10B981', icon: '💰' },
-      { key: '存款', name: '存款', color: '#3B82F6', icon: '🏦' },
-      { key: '房产', name: '房产', color: '#F59E0B', icon: '🏠' },
-      { key: '车辆', name: '车辆', color: '#EF4444', icon: '🚗' },
-      { key: '基金', name: '基金', color: '#8B5CF6', icon: '📈' },
-      { key: '股票', name: '股票', color: '#EC4899', icon: '📊' },
-      { key: '其他', name: '其他', color: '#6B7280', icon: '📦' }
+      { key: '现金', name: '现金', color: '#10B981', icon: '/images/category/cash.png' },
+      { key: '存款', name: '存款', color: '#3B82F6', icon: '/images/category/credit.png' },
+      { key: '房产', name: '房产', color: '#F59E0B', icon: '/images/category/house.png' },
+      { key: '车辆', name: '车辆', color: '#EF4444', icon: '/images/category/car.png' },
+      { key: '基金', name: '基金', color: '#8B5CF6', icon: '/images/category/fund.png' },
+      { key: '股票', name: '股票', color: '#EC4899', icon: '/images/category/stock.png' },
+      { key: '其他', name: '其他', color: '#6B7280', icon: '/images/category/other.png' }
     ]
   },
 
@@ -56,7 +70,8 @@ Page({
     
     // 页面加载时自动执行一次分析
     setTimeout(() => {
-      this.generateAIAnalysis();
+ // 生成分析
+    this.generateAIAnalysis(); // 统一的人生圆满度分析
     }, 1000);
   },
 
@@ -225,7 +240,13 @@ Page({
         name: {
           formatter: function(value, indicator) {
             const radarItem = radarData.find(item => item.dimension === value);
-            return `{title|${value}}\n{value|${radarItem ? radarItem.score.toFixed(1) : 0}分}`;
+            // 直接在这里实现formatScore的逻辑，避免this上下文问题
+            const formatScore = (score) => {
+              const num = Number(score);
+              if (isNaN(num)) return '0.0';
+              return num.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            };
+            return `{title|${value}}\n{value|${radarItem ? formatScore(radarItem.score) : '0.0'}分}`;
           },
           rich: {
             title: {
@@ -374,10 +395,18 @@ Page({
           fontSize: 10,
           color: '#666',
           formatter: function(value) {
+            // 强制使用英文数字格式，避免系统本地化影响
+            const formatNumber = (n) => {
+              const parts = n.toString().split('.');
+              parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+              return parts.join('.');
+            };
+            
             if (value >= 10000) {
-              return (value / 10000).toFixed(1) + '万';
+              const formatted = (value / 10000).toFixed(1);
+              return formatNumber(formatted) + '万';
             }
-            return value.toFixed(0);
+            return formatNumber(Math.round(value));
           }
         },
         axisLine: {
@@ -485,7 +514,7 @@ Page({
         value: categoryTotals[category.key],
         color: category.color,
         icon: category.icon,
-        percentage: totalAmount > 0 ? ((categoryTotals[category.key] / totalAmount) * 100).toFixed(1) : 0,
+        percentage: totalAmount > 0 ? ((categoryTotals[category.key] / totalAmount) * 100).toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : 0,
         formattedValue: app.formatCurrency(categoryTotals[category.key])
       }))
       .filter(item => item.value > 0)
@@ -616,7 +645,7 @@ Page({
       formattedTotalValue: app.formatCurrency(totalAmount),
       categoryCount: categoryData.length,
       averageValue: averageValue,
-      formattedAverageValue: averageValue.toFixed(2) + '元', // 保留两位小数
+      formattedAverageValue: this.formatValue(averageValue) + '元', // 格式化数值
       topCategory: categoryData.length > 0 ? categoryData[0] : null
     };
 
@@ -625,14 +654,21 @@ Page({
 
   // ========== 个人分析相关方法 ==========
   
-  // 生成AI分析
+  // 格式化数值（避免.00格式）
+  formatValue: function(value) {
+    const rounded = Math.round(value * 100) / 100;
+    return rounded % 1 === 0 ? Math.round(rounded) : rounded;
+  },
+  
+  // 生成AI分析（统一人生圆满度分析）
   generateAIAnalysis: function() {
     const { assets, categoryData, totalAmount } = this.data;
     
     if (assets.length === 0) {
       this.setData({ 
         aiAnalysis: '暂无资产数据，无法进行分析。请先添加一些资产信息。',
-        isAnalyzing: false 
+        isAnalyzing: false,
+        isRankingAnalyzing: false
       });
       return;
     }
@@ -640,59 +676,112 @@ Page({
     // 显示加载状态
     this.setData({ 
       isAnalyzing: true,
-      aiAnalysis: '正在分析您的资产状况，请稍候...'
+      isRankingAnalyzing: true,
+      aiAnalysis: '正在分析您的人生圆满度，请稍候...'
     });
 
-    // 获取个人信息和设置
+    // 获取个人信息
     const personalInfo = wx.getStorageSync('personalInfo') || {};
-    const settings = app.getSettings();
-    const apiKey = settings.deepseekApiKey;
     
-    // 计算雷达图数据
+    // 先计算基础雷达图数据（用于AI分析参考）
     this.calculateRadarData();
     
-    // 计算段位评分
-    this.calculateRankingScore();
-
+    // 获取当前雷达图数据
+    const { radarData } = this.data;
+    
     // 检查是否配置了AI Key
+    const settings = wx.getStorageSync('settings') || {};
+    const apiKey = settings.deepseekApiKey;
+    
     if (apiKey && apiKey.trim()) {
-      // 使用AI分析
-      this.performAIAnalysis(apiKey, personalInfo);
+      // 使用统一的AI人生圆满度分析
+      this.performUnifiedAIAnalysis(personalInfo, radarData);
     } else {
       // 使用本地分析
       this.performLocalAnalysis(personalInfo);
     }
   },
 
-  // 执行AI分析
-  performAIAnalysis: function(apiKey, personalInfo) {
+  // 执行统一AI分析
+  performUnifiedAIAnalysis: function(personalInfo, radarData) {
     const { assets, categoryData, totalAmount } = this.data;
     
-    // 引入AI分析工具
-    const aiAnalysis = require('../../utils/ai-analysis');
+    // 引入统一的人生圆满度分析工具
+    const aiLifeAnalysis = require('../../utils/ai-life-analysis');
     
     const analysisParams = {
+      personalInfo,
       assets,
       categoryData,
       totalAmount,
-      personalInfo
+      radarData
     };
 
-    aiAnalysis.analyzeWithDeepSeekAI(analysisParams, apiKey)
+    aiLifeAnalysis.analyzeLifeFulfillment(analysisParams)
       .then(result => {
+        // 更新雷达图数据（使用AI返回的评分）
+        const formatScore = (score) => {
+          const num = Number(score);
+          if (isNaN(num)) return '0.0';
+          return num.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        };
+        
+        const updatedRadarData = [
+          { dimension: '栖居归宿', score: result.radarScores['栖居归宿'] || 50, maxScore: 100, formattedScore: formatScore(result.radarScores['栖居归宿'] || 50) },
+          { dimension: '财富积累', score: result.radarScores['财富积累'] || 50, maxScore: 100, formattedScore: formatScore(result.radarScores['财富积累'] || 50) },
+          { dimension: '生活精选', score: result.radarScores['生活精选'] || 50, maxScore: 100, formattedScore: formatScore(result.radarScores['生活精选'] || 50) },
+          { dimension: '守护保障', score: result.radarScores['守护保障'] || 50, maxScore: 100, formattedScore: formatScore(result.radarScores['守护保障'] || 50) },
+          { dimension: '自由便捷', score: result.radarScores['自由便捷'] || 50, maxScore: 100, formattedScore: formatScore(result.radarScores['自由便捷'] || 50) }
+        ];
+        
+        // 计算平均分和段位
+        const averageScore = updatedRadarData.reduce((sum, item) => sum + item.score, 0) / updatedRadarData.length;
+        const { rankingLevel, rankingClass, totalScore } = this.calculateRankingFromScore(averageScore);
+        
+        // 更新所有相关数据
         this.setData({ 
-          aiAnalysis: result,
+          // AI分析结果
+          aiAnalysis: result.overallAnalysis,
+          analysisType: 'ai',
           isAnalyzing: false,
-          analysisType: 'ai' // 标记为AI分析
+          
+          // 雷达图数据
+          radarData: updatedRadarData,
+          
+          // 排名数据
+          regionalRanking: result.regionalRanking || 50,
+          nationalRanking: result.nationalRanking || 50,
+          rankingAnalysisSummary: result.comparisonWithNational || '分析完成',
+          rankingAnalysisType: 'ai',
+          isRankingAnalyzing: false,
+          
+          // 段位数据
+          rankingScore: Math.round(averageScore),
+          rankingLevel: rankingLevel,
+          rankingClass: rankingClass,
+          totalScore: Math.round(totalScore),
+          
+          // 躺平生活数据
+          lifeDuration: result.lifeAnalysis?.lifeDuration || '计算中',
+          dailyBudget: result.lifeAnalysis?.dailyBudget || 0,
+          recommendedCities: result.lifeAnalysis?.recommendedCities || [],
+          lifePlans: result.lifeAnalysis?.lifePlans || [],
+          
+          // 额外指标
+          stabilityIndex: result.stabilityIndex || 50,
+          richnessIndex: result.richnessIndex || 50,
+          lifeFulfillmentLevel: result.lifeFulfillmentLevel || '待评估',
+          suggestions: result.suggestions || []
         });
       })
       .catch(error => {
-        console.error('AI分析失败:', error);
+        console.error('统一AI分析失败:', error);
         
         // AI分析失败时降级到本地分析
         this.setData({ 
           aiAnalysis: '⚠️ AI分析服务暂时不可用，已为您提供基础分析。\n\n',
-          isAnalyzing: false
+          isAnalyzing: false,
+          isRankingAnalyzing: false
         });
         
         // 执行本地分析作为备选
@@ -704,114 +793,152 @@ Page({
 
   // 执行本地分析
   performLocalAnalysis: function(personalInfo, isBackup = false) {
-    const { assets, categoryData, totalAmount } = this.data;
+    const { assets, categoryData, totalAmount, radarData } = this.data;
     
-    // 引入AI分析工具的基础分析功能
-    const aiAnalysis = require('../../utils/ai-analysis');
+    // 引入统一的人生圆满度分析工具
+    const aiLifeAnalysis = require('../../utils/ai-life-analysis');
     
     const analysisParams = {
+      personalInfo,
       assets,
       categoryData,
       totalAmount,
-      personalInfo
+      radarData
     };
 
-    const basicAnalysis = aiAnalysis.generateBasicAnalysis(analysisParams);
+    const result = aiLifeAnalysis.generateBasicLifeAnalysis(analysisParams);
     
-    // 添加个性化建议
-    const personalizedAnalysis = this.addPersonalizedSuggestions(basicAnalysis, personalInfo);
+    // 更新雷达图数据（使用本地计算的评分）
+    const formatScore = (score) => {
+      const num = Number(score);
+      if (isNaN(num)) return '0.0';
+      return num.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+    
+    const updatedRadarData = [
+      { dimension: '栖居归宿', score: result.radarScores['栖居归宿'] || 50, maxScore: 100, formattedScore: formatScore(result.radarScores['栖居归宿'] || 50) },
+      { dimension: '财富积累', score: result.radarScores['财富积累'] || 50, maxScore: 100, formattedScore: formatScore(result.radarScores['财富积累'] || 50) },
+      { dimension: '生活精选', score: result.radarScores['生活精选'] || 50, maxScore: 100, formattedScore: formatScore(result.radarScores['生活精选'] || 50) },
+      { dimension: '守护保障', score: result.radarScores['守护保障'] || 50, maxScore: 100, formattedScore: formatScore(result.radarScores['守护保障'] || 50) },
+      { dimension: '自由便捷', score: result.radarScores['自由便捷'] || 50, maxScore: 100, formattedScore: formatScore(result.radarScores['自由便捷'] || 50) }
+    ];
+    
+    // 计算平均分和段位
+    const averageScore = updatedRadarData.reduce((sum, item) => sum + item.score, 0) / updatedRadarData.length;
+    const { rankingLevel, rankingClass, totalScore } = this.calculateRankingFromScore(averageScore);
     
     const finalAnalysis = isBackup 
-      ? this.data.aiAnalysis + personalizedAnalysis
-      : personalizedAnalysis;
+      ? this.data.aiAnalysis + result.overallAnalysis
+      : result.overallAnalysis;
 
+    // 更新所有相关数据
     this.setData({ 
+      // AI分析结果
       aiAnalysis: finalAnalysis,
+      analysisType: 'local',
       isAnalyzing: false,
-      analysisType: 'local' // 标记为本地分析
+      
+      // 雷达图数据
+      radarData: updatedRadarData,
+      
+      // 排名数据
+      regionalRanking: result.regionalRanking || 50,
+      nationalRanking: result.nationalRanking || 50,
+      rankingAnalysisSummary: result.comparisonWithNational || '本地分析完成',
+      rankingAnalysisType: 'local',
+      isRankingAnalyzing: false,
+      
+      // 段位数据
+      rankingScore: Math.round(averageScore),
+      rankingLevel: rankingLevel,
+      rankingClass: rankingClass,
+      totalScore: Math.round(totalScore),
+      
+      // 躺平生活数据
+      lifeDuration: result.lifeAnalysis?.lifeDuration || '计算中',
+      dailyBudget: result.lifeAnalysis?.dailyBudget || 0,
+      recommendedCities: result.lifeAnalysis?.recommendedCities || [],
+      lifePlans: result.lifeAnalysis?.lifePlans || [],
+      
+      // 额外指标
+      stabilityIndex: result.stabilityIndex || 50,
+      richnessIndex: result.richnessIndex || 50,
+      lifeFulfillmentLevel: result.lifeFulfillmentLevel || '待评估',
+      suggestions: result.suggestions || []
     });
   },
 
-  // 添加个性化建议
-  addPersonalizedSuggestions: function(basicAnalysis, personalInfo) {
-    let personalizedSuggestions = basicAnalysis;
+  // 根据评分计算段位信息
+  calculateRankingFromScore: function(averageScore) {
+    let rankingLevel = '';
+    let rankingClass = '';
+    let totalScore = averageScore;
     
-    // 根据年龄给出建议
-    const age = this.calculateAge(personalInfo.birthday);
-    if (age) {
-      personalizedSuggestions += "\n🎯 个性化建议：\n";
-      
-      if (age < 30) {
-        personalizedSuggestions += "• 年轻阶段：建议增加高成长性投资比例，如股票基金\n";
-        personalizedSuggestions += "• 可适当承担较高风险以获得更好收益\n";
-      } else if (age < 45) {
-        personalizedSuggestions += "• 中年阶段：建议平衡风险与收益，稳健投资\n";
-        personalizedSuggestions += "• 考虑增加保险和养老金配置\n";
-      } else {
-        personalizedSuggestions += "• 成熟阶段：建议降低风险，增加稳定收益投资\n";
-        personalizedSuggestions += "• 重点关注资产保值和流动性\n";
-      }
+    if (averageScore >= 90) {
+      rankingLevel = '王者';
+      rankingClass = 'king';
+    } else if (averageScore >= 80) {
+      rankingLevel = '钻石';
+      rankingClass = 'diamond';
+    } else if (averageScore >= 70) {
+      rankingLevel = '铂金';
+      rankingClass = 'platinum';
+    } else if (averageScore >= 60) {
+      rankingLevel = '黄金';
+      rankingClass = 'gold';
+    } else if (averageScore >= 50) {
+      rankingLevel = '白银';
+      rankingClass = 'silver';
+    } else {
+      rankingLevel = '青铜';
+      rankingClass = 'bronze';
     }
     
-    // 根据地区给出建议
-    if (personalInfo.location) {
-      personalizedSuggestions += `• 地区特色：基于您在${personalInfo.location}的情况，建议关注当地房产和经济发展趋势\n`;
-    }
-    
-    // 根据职业给出建议
-    if (personalInfo.job) {
-      personalizedSuggestions += `• 职业规划：结合您的${personalInfo.job}职业特点，建议制定相应的财务规划\n`;
-    }
-    
-    return personalizedSuggestions;
-  },
-
-  // 计算年龄
-  calculateAge: function(birthday) {
-    if (!birthday) return null;
-    
-    const birthDate = new Date(birthday);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    
-    return age;
+    return { rankingLevel, rankingClass, totalScore };
   },
 
   // 计算雷达图数据
   calculateRadarData: function() {
     const { assets, categoryData, totalAmount } = this.data;
     
+    // 强制使用英文数字格式的函数
+    const formatScore = (score) => {
+      const num = Number(score);
+      if (isNaN(num)) return '0.0';
+      return num.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+    
     // 计算各维度得分（0-100分）
     const radarData = [
       {
-        dimension: '资产规模',
-        score: Math.round(Math.min(100, Math.max(0, (totalAmount / 1000000) * 100))), // 100万为满分
-        maxScore: 100
+        dimension: '栖居归宿',
+        score: Math.round(Math.max(0, this.calculateHousingScore())),
+        maxScore: 100,
+        formattedScore: formatScore(Math.max(0, this.calculateHousingScore()))
       },
       {
-        dimension: '多元化程度',
-        score: Math.round(Math.min(100, Math.max(0, (categoryData.length / 7) * 100))), // 7个类别为满分
-        maxScore: 100
+        dimension: '财富积累',
+        score: Math.round(Math.max(0, this.calculateWealthScore())),
+        maxScore: 100,
+        formattedScore: formatScore(Math.max(0, this.calculateWealthScore()))
       },
       {
-        dimension: '流动性',
-        score: Math.round(Math.max(0, this.calculateLiquidityScore())),
-        maxScore: 100
+        dimension: '生活精选',
+        score: Math.round(Math.max(0, this.calculateLifestyleScore())),
+        maxScore: 100,
+        formattedScore: formatScore(Math.max(0, this.calculateLifestyleScore()))
       },
       {
-        dimension: '增长潜力',
-        score: Math.round(Math.max(0, this.calculateGrowthScore())),
-        maxScore: 100
+        dimension: '守护保障',
+        score: Math.round(Math.max(0, this.calculateProtectionScore())),
+        maxScore: 100,
+        formattedScore: formatScore(Math.max(0, this.calculateProtectionScore()))
       },
       {
-        dimension: '风险控制',
-        score: Math.round(Math.max(0, this.calculateRiskScore())),
-        maxScore: 100
+        dimension: '自由便捷',
+        score: Math.round(Math.max(0, this.calculateMobilityScore())),
+        maxScore: 100,
+        formattedScore: formatScore(Math.max(0, this.calculateMobilityScore()))
       }
     ];
 
@@ -822,53 +949,132 @@ Page({
     this.updateRadarChart();
   },
 
-  // 计算流动性得分
-  calculateLiquidityScore: function() {
+  // 计算栖居归宿得分（房产相关）
+  calculateHousingScore: function() {
     const { assets, totalAmount } = this.data;
     if (totalAmount === 0) return 0;
     
-    let liquidAssets = 0;
+    let housingAssets = 0;
     assets.forEach(asset => {
       const value = asset.currentValue !== undefined ? asset.currentValue : asset.amount;
-      if (['现金', '存款'].includes(asset.category)) {
-        liquidAssets += value;
+      if (['房产'].includes(asset.category)) {
+        housingAssets += value;
       }
     });
     
-    const liquidityRatio = liquidAssets / totalAmount;
-    return Math.min(100, liquidityRatio * 100 * 2); // 50%流动资产为满分
+    const housingRatio = housingAssets / totalAmount;
+    // 房产占比30-60%为最佳，超过或不足都会降分
+    if (housingRatio >= 0.3 && housingRatio <= 0.6) {
+      return Math.min(100, housingRatio * 100 * 1.5);
+    } else if (housingRatio < 0.3) {
+      return housingRatio * 100 * 2; // 不足30%按比例给分
+    } else {
+      return Math.max(60, 100 - (housingRatio - 0.6) * 200); // 超过60%扣分
+    }
   },
 
-  // 计算增长潜力得分
-  calculateGrowthScore: function() {
+  // 计算财富积累得分（现金、存款、投资）
+  calculateWealthScore: function() {
     const { assets, totalAmount } = this.data;
     if (totalAmount === 0) return 0;
     
-    let growthAssets = 0;
+    let wealthAssets = 0;
     assets.forEach(asset => {
       const value = asset.currentValue !== undefined ? asset.currentValue : asset.amount;
-      if (['股票', '基金', '房产'].includes(asset.category)) {
-        growthAssets += value;
+      if (['现金', '存款', '股票', '基金'].includes(asset.category)) {
+        wealthAssets += value;
       }
     });
     
-    const growthRatio = growthAssets / totalAmount;
-    return Math.min(100, growthRatio * 100 * 1.5); // 67%增长型资产为满分
+    const wealthRatio = wealthAssets / totalAmount;
+    // 基于总资产规模和流动资产比例综合评分
+    const scaleScore = Math.min(50, (totalAmount / 1000000) * 50); // 资产规模得分，100万为满分50分
+    const ratioScore = Math.min(50, wealthRatio * 100); // 比例得分，最高50分
+    return scaleScore + ratioScore;
   },
 
-  // 计算风险控制得分
-  calculateRiskScore: function() {
-    const { categoryData } = this.data;
+  // 计算生活精选得分（电子产品、奢侈品等）
+  calculateLifestyleScore: function() {
+    const { assets, totalAmount } = this.data;
+    if (totalAmount === 0) return 0;
     
-    // 基于资产分散程度计算风险控制得分
-    if (categoryData.length === 0) return 0;
+    let lifestyleAssets = 0;
+    assets.forEach(asset => {
+      const value = asset.currentValue !== undefined ? asset.currentValue : asset.amount;
+      if (['电子产品', '奢侈品', '收藏品', '其他'].includes(asset.category)) {
+        lifestyleAssets += value;
+      }
+    });
     
-    // 计算基尼系数的简化版本
-    const values = categoryData.map(item => parseFloat(item.percentage));
-    const maxConcentration = Math.max(...values);
+    const lifestyleRatio = lifestyleAssets / totalAmount;
+    // 生活品质资产占比5-20%为合理范围
+    if (lifestyleRatio >= 0.05 && lifestyleRatio <= 0.2) {
+      return Math.min(100, lifestyleRatio * 100 * 4); // 在合理范围内按比例给分
+    } else if (lifestyleRatio < 0.05) {
+      return lifestyleRatio * 100 * 10; // 不足5%按比例给分，但权重更高
+    } else {
+      return Math.max(50, 100 - (lifestyleRatio - 0.2) * 300); // 超过20%扣分
+    }
+  },
+
+  // 计算守护保障得分（保险相关）
+  calculateProtectionScore: function() {
+    const { assets, totalAmount } = this.data;
+    if (totalAmount === 0) return 0;
     
-    // 最大集中度越低，风险控制越好
-    return Math.max(0, 100 - maxConcentration);
+    let protectionAssets = 0;
+    assets.forEach(asset => {
+      const value = asset.currentValue !== undefined ? asset.currentValue : asset.amount;
+      if (['保险'].includes(asset.category)) {
+        protectionAssets += value;
+      }
+    });
+    
+    const protectionRatio = protectionAssets / totalAmount;
+    // 保险资产占比2-10%为合理范围
+    if (protectionRatio >= 0.02 && protectionRatio <= 0.1) {
+      return Math.min(100, protectionRatio * 100 * 8); // 在合理范围内给高分
+    } else if (protectionRatio < 0.02) {
+      return protectionRatio * 100 * 20; // 不足2%按比例给分
+    } else {
+      return Math.max(70, 100 - (protectionRatio - 0.1) * 200); // 超过10%轻微扣分
+    }
+  },
+
+  // 计算自由便捷得分（汽车、电动车、交通工具等）
+  calculateMobilityScore: function() {
+    const { assets, totalAmount } = this.data;
+    if (totalAmount === 0) return 0;
+    
+    let mobilityAssets = 0;
+    assets.forEach(asset => {
+      const value = asset.currentValue !== undefined ? asset.currentValue : asset.amount;
+      // 扩展车辆相关分类识别
+      const mobilityCategories = ['汽车', '交通工具', '车辆', '电动车', '摩托车', '自行车'];
+      if (mobilityCategories.includes(asset.category)) {
+        mobilityAssets += value;
+      }
+    });
+    
+    console.log('自由便捷维度计算:', {
+      mobilityAssets,
+      totalAmount,
+      ratio: mobilityAssets / totalAmount,
+      assets: this.data.assets.filter(asset => {
+        const mobilityCategories = ['汽车', '交通工具', '车辆', '电动车', '摩托车', '自行车'];
+        return mobilityCategories.includes(asset.category);
+      })
+    });
+    
+    const mobilityRatio = mobilityAssets / totalAmount;
+    // 交通工具占比5-25%为合理范围
+    if (mobilityRatio >= 0.05 && mobilityRatio <= 0.25) {
+      return Math.min(100, mobilityRatio * 100 * 3); // 在合理范围内按比例给分
+    } else if (mobilityRatio < 0.05) {
+      return mobilityRatio * 100 * 8; // 不足5%按比例给分
+    } else {
+      return Math.max(60, 100 - (mobilityRatio - 0.25) * 150); // 超过25%扣分
+    }
   },
 
   // 计算段位评分（支持AI分析）
@@ -907,116 +1113,6 @@ Page({
       rankingClass: rankingClass,
       totalScore: Math.round(totalScore)
     });
-
-    // 使用AI排名分析
-    this.generateAIRankingAnalysis();
-  },
-
-  // 生成AI排名分析
-  generateAIRankingAnalysis: function() {
-    const { radarData, totalAmount, categoryData } = this.data;
-    
-    if (radarData.length === 0) {
-      this.setData({ 
-        regionalRanking: 50,
-        nationalRanking: 60,
-        rankingAnalysisSummary: '暂无数据进行排名分析'
-      });
-      return;
-    }
-
-    // 显示加载状态
-    this.setData({ 
-      isRankingAnalyzing: true 
-    });
-
-    // 获取个人信息和设置
-    const personalInfo = wx.getStorageSync('personalInfo') || {};
-    const settings = wx.getStorageSync('settings') || {};
-    const apiKey = settings.deepseekApiKey;
-    
-    // 计算平均得分
-    const averageScore = radarData.reduce((sum, item) => sum + item.score, 0) / radarData.length;
-    
-    // 准备分析参数
-    const analysisParams = {
-      personalInfo,
-      totalAssets: totalAmount,
-      averageScore,
-      categoryCount: categoryData.length,
-      radarData
-    };
-
-    // 使用AI排名分析工具
-    const aiRanking = require('../../utils/ai-ranking');
-    
-    aiRanking.analyzeRanking(analysisParams)
-      .then(result => {
-        // 检查AI返回的数值，如果为null则使用本地计算的兜底数值
-        let finalRegional = result.regional;
-        let finalNational = result.national;
-        
-        if (finalRegional === null || finalRegional === undefined || isNaN(finalRegional)) {
-          finalRegional = Math.max(5, Math.min(95, Math.round(100 - averageScore + Math.random() * 10)));
-        }
-        
-        if (finalNational === null || finalNational === undefined || isNaN(finalNational)) {
-          finalNational = Math.max(10, Math.min(98, Math.round(100 - averageScore + 15 + Math.random() * 10)));
-        }
-        
-        this.setData({ 
-          regionalRanking: finalRegional,
-          nationalRanking: finalNational,
-          rankingAnalysisSummary: this.extractSummary(result.analysis, averageScore),
-          rankingAnalysisType: apiKey ? 'ai' : 'local',
-          isRankingAnalyzing: false 
-        });
-      })
-      .catch(error => {
-        console.error('排名分析失败:', error);
-        
-        // 降级到基础排名计算
-        const regionalRanking = Math.max(5, Math.min(95, Math.round(100 - averageScore + Math.random() * 10)));
-        const nationalRanking = Math.max(10, Math.min(98, Math.round(100 - averageScore + 15 + Math.random() * 10)));
-        
-        this.setData({ 
-          regionalRanking: regionalRanking,
-          nationalRanking: nationalRanking,
-          rankingAnalysisSummary: this.generateBasicRankingSummary(averageScore, regionalRanking, nationalRanking),
-          rankingAnalysisType: 'local',
-          isRankingAnalyzing: false 
-        });
-      });
-  },
-
-  // 提取分析摘要（从完整分析中提取关键信息，限制在50字左右）
-  extractSummary: function(fullAnalysis, averageScore) {
-    if (!fullAnalysis) return this.generateBasicRankingSummary(averageScore || 60, 50, 60);
-    
-    // 尝试提取综合评价部分的简短描述
-    const evaluationMatch = fullAnalysis.match(/### 💎 综合评价\n([^#]+)/);
-    if (evaluationMatch) {
-      const evaluation = evaluationMatch[1].trim();
-      // 提取第一句话，限制在50字以内
-      const firstSentence = evaluation.split(/[。！？\n]/)[0];
-      if (firstSentence && firstSentence.length <= 50) {
-        return firstSentence.replace(/\*\*/g, '').trim();
-      }
-    }
-    
-    // 如果没有找到合适的摘要，生成基础摘要
-    return this.generateBasicRankingSummary(averageScore || 60, 50, 60);
-  },
-
-  // 生成基础排名摘要
-  generateBasicRankingSummary: function(averageScore, regionalRanking, nationalRanking) {
-    if (averageScore >= 80) {
-      return `您的财务状况表现优秀，位于前${Math.round(regionalRanking)}%的地区排名中。`;
-    } else if (averageScore >= 60) {
-      return `您的财务状况良好，建议在资产配置方面进一步优化。`;
-    } else {
-      return `您的财务状况有较大提升空间，建议增加储蓄和投资多样化。`;
-    }
   },
 
   // ========== 工具方法 ==========

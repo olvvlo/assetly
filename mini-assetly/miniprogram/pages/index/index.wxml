@@ -11,7 +11,7 @@
     </view>
     <view class="header-right">
         <view class="add-btn" bindtap="goToAdd">
-          <text class="add-icon">+</text>
+          <image class="add-icon" src="/images/icons/add-line.png" mode="aspectFit"></image>
         </view>
       </view>
   </view>
@@ -20,10 +20,10 @@
   <view class="total-card">
     <view class="total-left">
       <text class="total-label">总资产</text>
-      <text class="total-amount">{{formattedTotalAmount}}</text>
+      <text class="total-amount number">{{formattedTotalAmount}}</text>
     </view>
     <view class="total-right">
-      <text class="asset-count-text">{{assetCount}}</text>
+      <text class="asset-count-text number">{{assetCount}}</text>
       <text class="asset-count-label">项资产</text>
     </view>
   </view>
@@ -39,19 +39,22 @@
     </view>
     <view class="category-groups">
       <view class="category-group" wx:for="{{groupedAssets}}" wx:key="category">
-        <view class="category-header">
-          <view class="category-dot" style="background-color: {{item.color}}"></view>
+        <view class="category-header" bindtap="toggleCategory" data-category="{{item.category}}">
+          <image class="category-icon" src="{{item.icon}}" mode="aspectFit"></image>
           <text class="category-name">{{item.category}}</text>
-          <text class="category-total">{{item.formattedTotal}}</text>
+          <text class="category-total number">{{item.formattedTotal}}</text>
+          <view class="collapse-icon {{item.collapsed ? 'collapsed' : ''}}">
+            <text>▼</text>
+          </view>
         </view>
-        <view class="asset-list">
+        <view class="asset-list" wx:if="{{!item.collapsed}}">
           <view class="asset-item" wx:for="{{item.assets}}" wx:key="id" wx:for-item="asset" bindtap="editAsset" data-asset="{{asset}}">
             <view class="asset-left">
               <view class="asset-info">
                 <text class="asset-name">{{asset.name}}</text>
                 <view class="asset-meta">
-                  <text class="asset-date">{{formatDate(asset.createTime || asset.createdAt)}}</text>
-                  <text class="asset-holding" wx:if="{{asset.holdingTime}}">持有{{asset.holdingTime}}</text>
+                  <text class="asset-date">2025年 3 月 19日{{formatDate(asset.createTime || asset.createdAt)}}</text>
+                  <view class="asset-holding-tag" wx:if="{{asset.holdingTime}}">{{asset.holdingTime}}</view>
                 </view>
               </view>
               <text class="asset-remark" wx:if="{{asset.remark}}">{{asset.remark}}</text>

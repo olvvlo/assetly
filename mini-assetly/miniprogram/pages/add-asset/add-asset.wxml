@@ -29,8 +29,7 @@
       </view>
       <view class="category-selector {{errors.category ? 'error' : ''}}" bindtap="showCategoryPicker">
         <view class="category-display">
-          <view wx:if="{{formData.category}}" class="category-icon" style="background-color: {{categories[categoryIndex].color}}">
-          </view>
+          <image wx:if="{{formData.category}}" class="category-icon" src="{{categories[categoryIndex].icon}}" mode="aspectFit"></image>
           <text>{{formData.category || '请选择分类'}}</text>
         </view>
         <text class="selector-arrow"></text>
@@ -78,9 +77,20 @@
 
     <!-- 预计估值 -->
     <view class="form-group">
-      <view class="form-label">
-        <text class="label-text">预计估值</text>
-        <text class="optional">（选填）</text>
+      <view class="form-label-with-btn">
+        <view class="form-label">
+          <text class="label-text">预计估值</text>
+          <text class="optional">（选填）</text>
+        </view>
+        <button 
+          class="ai-estimate-header-btn" 
+          wx:if="{{hasApiKey && formData.name && formData.amount && formData.purchaseDate}}" 
+          bindtap="performAIEstimate" 
+          disabled="{{isEstimating}}"
+        >
+          <text class="ai-icon">🤖</text>
+          <text>{{isEstimating ? 'AI估值中...' : 'AI估值'}}</text>
+        </button>
       </view>
       <view class="value-input-container">
         <input 
@@ -91,10 +101,6 @@
           data-field="currentValue"
           bindinput="onNumberInput"
         />
-        <button class="ai-estimate-btn" wx:if="{{hasApiKey}}" bindtap="performAIEstimate" disabled="{{isEstimating}}">
-          <text class="ai-icon">🤖</text>
-          <text>{{isEstimating ? 'AI估值中...' : 'AI估值'}}</text>
-        </button>
       </view>
       <text class="error-text" wx:if="{{errors.currentValue}}">{{errors.currentValue}}</text>
       <text class="form-hint" wx:if="{{aiEstimateResult}}">AI估值建议：{{aiEstimateResult}}</text>
@@ -131,22 +137,47 @@
     </view>
   </form>
 
-  <!-- 分类选择器 -->
-  <picker-view 
-    class="category-picker {{showCategoryPicker ? 'show' : ''}}"
-    value="{{[categoryIndex]}}"
-    bindchange="onCategoryChange"
-    wx:if="{{showCategoryPicker}}"
-  >
-    <picker-view-column>
-      <view class="picker-item" wx:for="{{categories}}" wx:key="key">
-        <view class="category-option">
-          <view class="category-color" style="background-color: {{item.color}}"></view>
-          <text class="category-name">{{item.name}}</text>
+  <!-- 分类选择器弹窗 -->
+  <view class="category-drawer {{showCategoryPicker ? 'show' : ''}}" wx:if="{{showCategoryPicker}}">
+    <!-- 抽屉头部 -->
+    <view class="drawer-header">
+      <text class="drawer-title">选择分类</text>
+      <view class="close-btn" bindtap="onCategoryCancel">✕</view>
+    </view>
+    
+    <!-- 添加新分类区域 -->
+    <view class="add-category-section">
+      <view class="section-title">新增分类</view>
+      <view class="add-category-form">
+        <input 
+          class="category-input" 
+          placeholder="输入分类名称" 
+          value="{{newCategoryName}}"
+          bindinput="onNewCategoryInput"
+          maxlength="10"
+        />
+        <button class="add-btn" bindtap="addNewCategory">添加</button>
+      </view>
+    </view>
+    
+    <!-- 已有分类区域 -->
+    <view class="existing-categories-section">
+      <view class="section-title">已有分类</view>
+      <view class="categories-grid">
+        <view 
+          class="category-item {{categoryIndex === index ? 'selected' : ''}}" 
+          wx:for="{{categories}}" 
+          wx:key="key"
+          wx:for-index="index"
+          data-index="{{index}}"
+          bindtap="onCategorySelect"
+        >
+          <image class="category-item-icon" src="{{item.icon}}" mode="aspectFit"></image>
+          <text class="category-item-name">{{item.name}}</text>
         </view>
       </view>
-    </picker-view-column>
-  </picker-view>
+    </view>
+  </view>
 
   <!-- 遮罩层 -->
   <view class="picker-mask {{showCategoryPicker ? 'show' : ''}}" bindtap="onCategoryCancel" wx:if="{{showCategoryPicker}}"></view>

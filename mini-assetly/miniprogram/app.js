@@ -1,6 +1,22 @@
 // app.js
 App({
   onLaunch: function () {
+    if (!wx.cloud) {
+      console.error('请使用 2.2.3 或以上的基础库以使用云能力');
+    } else {
+      wx.cloud.init({
+        // env 参数说明：
+        //   env 参数决定接下来小程序发起的云开发调用（wx.cloud.xxx）会默认请求到哪个云环境的资源
+        //   此处请填入环境 ID, 环境 ID 可打开云控制台查看
+        //   如不填则使用默认环境（第一个创建的环境）
+        // env: 'my-env-id',
+        traceUser: true,
+      });
+    }
+
+    // 加载自定义字体
+    this.loadCustomFont();
+
     this.globalData = {
       // 资产数据存储
       assets: [],
@@ -13,6 +29,44 @@ App({
     
     // 初始化本地存储
     this.initStorage();
+  },
+
+  // 加载自定义字体
+  loadCustomFont() {
+    // 加载阿里巴巴普惠体
+    wx.loadFontFace({
+      family: '阿里巴巴普惠体 2.0 55 Regular',
+      source: 'url("https://at.alicdn.com/wf/webfont/ymMdFTpfu3hd/Icuox4XyLcg7.woff2")',
+      success: function() {
+        console.log('阿里巴巴普惠体字体加载成功');
+      },
+      fail: function(res) {
+        console.log('阿里巴巴普惠体字体加载失败', res);
+      }
+    });
+
+    // 加载专门的数字字体 - Roboto Mono，确保数字和标点符号显示正确
+    wx.loadFontFace({
+      family: 'RobotoMono',
+      source: 'url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap")',
+      success: function() {
+        console.log('Roboto Mono数字字体加载成功');
+      },
+      fail: function(res) {
+        console.log('Roboto Mono数字字体加载失败', res);
+        // 如果加载失败，尝试加载备用的数字字体
+        wx.loadFontFace({
+          family: 'SourceCodePro',
+          source: 'url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap")',
+          success: function() {
+            console.log('Source Code Pro备用数字字体加载成功');
+          },
+          fail: function(res) {
+            console.log('备用数字字体也加载失败', res);
+          }
+        });
+      }
+    });
   },
 
   // 初始化本地存储
@@ -207,19 +261,78 @@ App({
     }
   },
 
-  // 格式化货币
+  // 格式化货币 - 完全绕过系统本地化
   formatCurrency: function(amount) {
     if (amount === null || amount === undefined || isNaN(amount)) {
       return '¥0';
     }
     
     const num = Number(amount);
+    
+    // 完全手动格式化数字，绕过任何系统本地化
+    const manualFormatNumber = (n) => {
+      // 转换为字符串，确保使用标准数字格式
+      const str = Math.abs(n).toString();
+      const parts = str.split('.');
+      
+      // 手动添加千分位分隔符
+      let integerPart = parts[0];
+      let result = '';
+      for (let i = integerPart.length - 1, count = 0; i >= 0; i--, count++) {
+        if (count > 0 && count % 3 === 0) {
+          result = ',' + result;
+        }
+        result = integerPart[i] + result;
+      }
+      
+      // 如果有小数部分，添加回去
+      if (parts[1]) {
+        result += '.' + parts[1];
+      }
+      
+      return (n < 0 ? '-' : '') + result;
+    };
+    
     // 如果是整数，不显示小数点
     if (num % 1 === 0) {
-      return `¥${num.toLocaleString('zh-CN')}`;
+      return `¥${manualFormatNumber(Math.round(num))}`;
     } else {
       // 如果是小数，保留两位小数
-      return `¥${num.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      const rounded = Math.round(num * 100) / 100;
+      const decimalPart = (rounded % 1).toFixed(2).substring(1); // 获取小数部分，包括点
+      const integerPart = Math.floor(Math.abs(rounded));
+      const formattedInteger = manualFormatNumber(integerPart);
+      return `¥${(rounded < 0 ? '-' : '') + formattedInteger + decimalPart}`;
     }
+  },
+
+  // 通用数字格式化函数 - 完全手动实现
+  formatNumber: function(num) {
+    if (num === null || num === undefined || isNaN(num)) {
+      return '0';
+    }
+    
+    const number = Number(num);
+    
+    // 完全手动格式化，避免系统本地化
+    const str = Math.abs(number).toString();
+    const parts = str.split('.');
+    
+    // 手动添加千分位分隔符
+    let integerPart = parts[0];
+    let result = '';
+    for (let i = integerPart.length - 1, count = 0; i >= 0; i--, count++) {
+      if (count > 0 && count % 3 === 0) {
+        result = ',' + result;
+      }
+      result = integerPart[i] + result;
+    }
+    
+    // 如果有小数部分，添加回去
+    if (parts[1]) {
+      result += '.' + parts[1];
+    }
+    
+    return (number < 0 ? '-' : '') + result;
   }
 });
