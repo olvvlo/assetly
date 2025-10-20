@@ -5,7 +5,7 @@
     <view class="header-left">
       <image class="app-icon" src="/images/app-icon.png" mode="aspectFit"></image>
       <view class="title-group">
-        <text class="main-title">口袋轻账</text>
+        <text class="main-title">物单随记</text>
         <text class="sub-title">个人资产管理</text>
       </view>
     </view>

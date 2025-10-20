@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": "口袋轻账",
+  "navigationBarTitleText": "物单随记",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
   "usingComponents": {}
 }

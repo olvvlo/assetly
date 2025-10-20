@@ -225,7 +225,7 @@ Page({
       const now = new Date();
       const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
       const timestamp = now.getTime();
-      const fileName = `口袋轻账-${dateStr}-${timestamp}.png`;
+      const fileName = `物单随记-${dateStr}-${timestamp}.png`;
       
       // 直接使用微信分享API
       wx.shareFileMessage({
@@ -448,7 +448,7 @@ Page({
     ctx.fillStyle = '#9ca3af';
     ctx.font = '14px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('由 口袋轻账 生成', 200, y);
+    ctx.fillText('由 物单随记 生成', 200, y);
 
     // 保存图片
         wx.canvasToTempFilePath({
@@ -488,7 +488,7 @@ Page({
   saveToAlbum(filePath) {
     // 生成临时文件名，添加时间戳确保唯一性
     const timestamp = new Date().getTime();
-    const tempFilePath = `${wx.env.USER_DATA_PATH}/口袋轻账-${timestamp}.png`;
+    const tempFilePath = `${wx.env.USER_DATA_PATH}/物单随记-${timestamp}.png`;
     
     // 先将文件复制到临时目录，确保文件名唯一
     wx.getFileSystemManager().copyFile({

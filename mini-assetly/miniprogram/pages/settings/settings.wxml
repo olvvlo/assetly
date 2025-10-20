@@ -154,7 +154,7 @@
     
     <view class="setting-item" bindtap="showAbout">
       <view class="setting-info">
-        <text class="setting-label">关于口袋轻账</text>
+        <text class="setting-label">关于物单随记</text>
         <text class="setting-desc">版本信息和应用介绍</text>
       </view>
       <view class="setting-value">
@@ -210,15 +210,15 @@
     </view>
   </view>
 
-  <!-- 关于口袋轻账弹框 -->
+  <!-- 关于物单随记弹框 -->
   <view class="about-modal {{showAbout ? 'show' : ''}}" wx:if="{{showAbout}}">
     <view class="about-content">
       <view class="about-header">
-        <text class="about-title">关于口袋轻账</text>
+        <text class="about-title">关于物单随记</text>
         <text class="about-close" bindtap="closeAbout">×</text>
       </view>
       <view class="about-body">
-        <text class="desc-text">口袋轻账（v{{version}}）是一款简洁的个人资产管理工具，帮助您轻松记录和管理资产</text>
+        <text class="desc-text">物单随记（v{{version}}）是一款简洁的个人资产管理工具，帮助您轻松记录和管理资产</text>
         <view class="about-features">
           <text class="features-title">主要功能：</text>
           <text class="feature-item">• 资产记录与分类</text>

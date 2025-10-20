@@ -74,7 +74,7 @@
 
     <!-- 页脚 -->
     <view class="preview-footer">
-      <text class="footer-text">由 口袋轻账 生成</text>
+      <text class="footer-text">由 物单随记 生成</text>
     </view>
   </view>
 

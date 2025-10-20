@@ -9,9 +9,9 @@
   "window": {
     "backgroundColor": "#F8F9FA",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#1485ee",
-    "navigationBarTitleText": "口袋轻账",
-    "navigationBarTextStyle": "white"
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "物单随记",
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
     "color": "#999999",
